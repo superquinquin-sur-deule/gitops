@@ -31,10 +31,10 @@ spec:
                   apt-get update -qq
                   apt-get install -y -qq --no-install-recommends curl ca-certificates tzdata >/dev/null
                   export TZ=Europe/Paris
-                  url="https://github.com/superquinquin-sur-deule/odoo-cli/releases/download/v0.10.0/odoo-cli-0.10.0-linux-x86_64"
-                  expected_sha="b75c132db34456c1226acaf19c24ca8ba47e4e770d11ef3478e196b410411d52"
+                  # renovate: datasource=github-releases depName=superquinquin-sur-deule/odoo-cli
+                  version="0.10.0"
+                  url="https://github.com/superquinquin-sur-deule/odoo-cli/releases/download/v${version}/odoo-cli-${version}-linux-x86_64"
                   curl -fsSL -o /usr/local/bin/odoo-cli "$url"
-                  echo "$expected_sha  /usr/local/bin/odoo-cli" | sha256sum -c -
                   chmod +x /usr/local/bin/odoo-cli
                   begin="$(date +%d/%m/%Y)"
                   end="$(date -d '+7 days' +%d/%m/%Y)"
