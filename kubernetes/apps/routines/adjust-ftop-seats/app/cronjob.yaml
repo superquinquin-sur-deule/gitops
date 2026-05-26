@@ -1,0 +1,51 @@
+---
+apiVersion: batch/v1
+kind: CronJob
+metadata:
+  name: adjust-ftop-seats
+spec:
+  schedule: "0 2 * * *"
+  timeZone: Europe/Paris
+  concurrencyPolicy: Forbid
+  successfulJobsHistoryLimit: 3
+  failedJobsHistoryLimit: 3
+  jobTemplate:
+    spec:
+      backoffLimit: 1
+      template:
+        spec:
+          restartPolicy: OnFailure
+          containers:
+            - name: odoo-cli
+              image: docker.io/library/debian:bookworm-slim
+              imagePullPolicy: IfNotPresent
+              envFrom:
+                - secretRef:
+                    name: odoo-cli-secret
+              command:
+                - /bin/bash
+                - -euo
+                - pipefail
+                - -c
+                - |
+                  apt-get update -qq
+                  apt-get install -y -qq --no-install-recommends curl ca-certificates tzdata >/dev/null
+                  export TZ=Europe/Paris
+                  url="https://github.com/superquinquin-sur-deule/odoo-cli/releases/download/v0.10.0/odoo-cli-0.10.0-linux-x86_64"
+                  expected_sha="b75c132db34456c1226acaf19c24ca8ba47e4e770d11ef3478e196b410411d52"
+                  curl -fsSL -o /usr/local/bin/odoo-cli "$url"
+                  echo "$expected_sha  /usr/local/bin/odoo-cli" | sha256sum -c -
+                  chmod +x /usr/local/bin/odoo-cli
+                  begin="$(date +%d/%m/%Y)"
+                  end="$(date -d '+7 days' +%d/%m/%Y)"
+                  echo "Running adjust-ftop-seats from $begin to $end (include-draft)"
+                  exec odoo-cli creneaux adjust-ftop-seats \
+                    --begin-date "$begin" \
+                    --end-date "$end" \
+                    --include-draft
+              resources:
+                requests:
+                  cpu: 50m
+                  memory: 128Mi
+                limits:
+                  memory: 512Mi
