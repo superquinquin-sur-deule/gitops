@@ -42,7 +42,7 @@ spec:
     route:
       app:
         hostnames:
-          - "sesame2.${SECRET_DOMAIN}"
+          - "sesame.${SECRET_DOMAIN}"
         parentRefs:
           - name: envoy-internal
             namespace: network
