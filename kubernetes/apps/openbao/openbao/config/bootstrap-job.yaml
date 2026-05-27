@@ -1,0 +1,95 @@
+---
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: openbao-bootstrap
+  annotations:
+    kustomize.toolkit.fluxcd.io/force: "true"
+spec:
+  backoffLimit: 12
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/name: openbao-bootstrap
+    spec:
+      restartPolicy: OnFailure
+      containers:
+        - name: bootstrap
+          image: quay.io/openbao/openbao:2.5.4
+          env:
+            - name: VAULT_ADDR
+              value: http://openbao.openbao.svc.cluster.local:8200
+            - name: VAULT_TOKEN
+              valueFrom:
+                secretKeyRef:
+                  name: openbao-unseal
+                  key: ROOT_TOKEN
+          command:
+            - /bin/sh
+            - -ec
+            - |
+              echo "Waiting for OpenBao to be reachable, unsealed, and token to be valid..."
+              tries=0
+              until bao token lookup >/dev/null 2>&1; do
+                tries=$((tries+1))
+                if [ "$tries" -gt 120 ]; then
+                  echo "ERROR: token never became valid after 20 minutes" >&2
+                  exit 1
+                fi
+                sleep 10
+              done
+              echo "OpenBao ready. Configuring..."
+
+              echo "==> Ensuring KV v2 enabled at secret/"
+              if ! bao secrets list -format=json | grep -q '"secret/"'; then
+                bao secrets enable -path=secret -version=2 kv
+              else
+                echo "    already enabled"
+              fi
+
+              echo "==> Writing policy eso-reader"
+              bao policy write eso-reader - <<'EOF'
+              path "secret/data/*" {
+                capabilities = ["read"]
+              }
+              path "secret/metadata/*" {
+                capabilities = ["list", "read"]
+              }
+              EOF
+
+              echo "==> Ensuring Kubernetes auth method enabled"
+              if ! bao auth list -format=json | grep -q '"kubernetes/"'; then
+                bao auth enable kubernetes
+              else
+                echo "    already enabled"
+              fi
+
+              echo "==> Configuring Kubernetes auth method"
+              bao write auth/kubernetes/config \
+                kubernetes_host="https://kubernetes.default.svc:443" \
+                disable_iss_validation=true
+
+              echo "==> Creating role eso-reader"
+              bao write auth/kubernetes/role/eso-reader \
+                bound_service_account_names=external-secrets \
+                bound_service_account_namespaces=external-secrets \
+                policies=eso-reader \
+                ttl=1h
+
+              echo "Bootstrap complete."
+          resources:
+            requests:
+              cpu: 10m
+              memory: 32Mi
+            limits:
+              memory: 64Mi
+          securityContext:
+            allowPrivilegeEscalation: false
+            readOnlyRootFilesystem: true
+            capabilities:
+              drop:
+                - "ALL"
+      securityContext:
+        runAsNonRoot: true
+        runAsUser: 100
+        runAsGroup: 1000

@@ -1,0 +1,60 @@
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: openbao-auto-unseal
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: openbao-auto-unseal
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/name: openbao-auto-unseal
+    spec:
+      serviceAccountName: default
+      restartPolicy: Always
+      containers:
+        - name: unseal
+          image: quay.io/openbao/openbao:2.5.4
+          env:
+            - name: VAULT_ADDR
+              value: http://openbao.openbao.svc.cluster.local:8200
+            - name: UNSEAL_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: openbao-unseal
+                  key: UNSEAL_KEY
+          command:
+            - /bin/sh
+            - -ec
+            - |
+              while true; do
+                status="$(bao status -format=json 2>/dev/null || true)"
+                if [ -n "$status" ] && echo "$status" | grep -q '"sealed": true'; then
+                  if echo "$status" | grep -q '"initialized": true'; then
+                    echo "$(date -Iseconds) sealed=true initialized=true → unsealing"
+                    bao operator unseal "$UNSEAL_KEY" >/dev/null && echo "unsealed ok" || echo "unseal failed"
+                  else
+                    echo "$(date -Iseconds) initialized=false → waiting for manual init"
+                  fi
+                fi
+                sleep 10
+              done
+          resources:
+            requests:
+              cpu: 10m
+              memory: 32Mi
+            limits:
+              memory: 64Mi
+          securityContext:
+            allowPrivilegeEscalation: false
+            readOnlyRootFilesystem: true
+            capabilities:
+              drop:
+                - "ALL"
+      securityContext:
+        runAsNonRoot: true
+        runAsUser: 100
+        runAsGroup: 1000

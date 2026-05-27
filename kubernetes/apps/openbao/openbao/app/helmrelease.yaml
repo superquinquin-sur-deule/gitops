@@ -1,0 +1,56 @@
+---
+apiVersion: helm.toolkit.fluxcd.io/v2
+kind: HelmRelease
+metadata:
+  name: openbao
+spec:
+  chartRef:
+    kind: OCIRepository
+    name: openbao
+  interval: 1h
+  values:
+    global:
+      tlsDisable: true
+    injector:
+      enabled: false
+    server:
+      standalone:
+        enabled: true
+        config: |
+          ui = true
+          listener "tcp" {
+            tls_disable = 1
+            address = "[::]:8200"
+            cluster_address = "[::]:8201"
+          }
+          storage "file" {
+            path = "/openbao/data"
+          }
+          service_registration "kubernetes" {}
+      ha:
+        enabled: false
+      dataStorage:
+        enabled: true
+        size: 10Gi
+        storageClass: ceph-block
+        accessMode: ReadWriteOnce
+      resources:
+        requests:
+          cpu: 100m
+          memory: 256Mi
+        limits:
+          memory: 512Mi
+      readinessProbe:
+        enabled: true
+        exec:
+          command:
+            - /bin/sh
+            - -ec
+            - bao status -tls-skip-verify
+        failureThreshold: 2
+        initialDelaySeconds: 5
+        periodSeconds: 5
+        successThreshold: 1
+        timeoutSeconds: 3
+    ui:
+      enabled: true
