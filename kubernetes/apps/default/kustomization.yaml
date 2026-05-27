@@ -11,3 +11,4 @@ resources:
   - ./echo/ks.yaml
   - ./sesame/ks.yaml
   - ./accueil/ks.yaml
+  - ./scannettes/ks.yaml
