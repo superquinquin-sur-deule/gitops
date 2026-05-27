@@ -9,3 +9,4 @@ components:
 resources:
   - ./namespace.yaml
   - ./adjust-ftop-seats/ks.yaml
+  - ./reset-ftop-counter/ks.yaml
