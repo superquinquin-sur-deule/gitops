@@ -29,10 +29,14 @@ spec:
       ha:
         enabled: false
       dataStorage:
-        enabled: true
-        size: 10Gi
-        storageClass: ceph-block
-        accessMode: ReadWriteOnce
+        enabled: false
+      volumes:
+        - name: data
+          persistentVolumeClaim:
+            claimName: openbao
+      volumeMounts:
+        - name: data
+          mountPath: /openbao/data
       resources:
         requests:
           cpu: 100m
