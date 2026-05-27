@@ -26,7 +26,6 @@ spec:
           storage "file" {
             path = "/openbao/data"
           }
-          service_registration "kubernetes" {}
       ha:
         enabled: false
       dataStorage:
