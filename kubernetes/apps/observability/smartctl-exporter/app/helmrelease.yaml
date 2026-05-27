@@ -1,0 +1,21 @@
+---
+# yaml-language-server: $schema=https://k8s-schemas.home-operations.com/helm.toolkit.fluxcd.io/helmrelease_v2.json
+apiVersion: helm.toolkit.fluxcd.io/v2
+kind: HelmRelease
+metadata:
+  name: smartctl-exporter
+spec:
+  chartRef:
+    kind: OCIRepository
+    name: prometheus-smartctl-exporter
+  interval: 1h
+  values:
+    fullnameOverride: smartctl-exporter
+    config:
+      devices:
+        - /hostdev/sda
+        - /hostdev/nvme0n1
+    serviceMonitor:
+      enabled: true
+    prometheusRules:
+      enabled: true
