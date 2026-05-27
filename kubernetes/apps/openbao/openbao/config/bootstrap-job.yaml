@@ -40,19 +40,19 @@ spec:
               done
               echo "OpenBao ready. Configuring..."
 
-              echo "==> Ensuring KV v2 enabled at secret/"
-              if ! bao secrets list -format=json | grep -q '"secret/"'; then
-                bao secrets enable -path=secret -version=2 kv
+              echo "==> Ensuring KV v2 enabled at apps/"
+              if ! bao secrets list -format=json | grep -q '"apps/"'; then
+                bao secrets enable -path=apps -version=2 kv
               else
                 echo "    already enabled"
               fi
 
               echo "==> Writing policy eso-reader"
               bao policy write eso-reader - <<'EOF'
-              path "secret/data/*" {
+              path "apps/data/*" {
                 capabilities = ["read"]
               }
-              path "secret/metadata/*" {
+              path "apps/metadata/*" {
                 capabilities = ["list", "read"]
               }
               EOF
