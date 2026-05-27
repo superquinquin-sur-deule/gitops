@@ -1,0 +1,36 @@
+---
+# yaml-language-server: $schema=https://k8s-schemas.home-operations.com/monitoring.coreos.com/probe_v1.json
+apiVersion: monitoring.coreos.com/v1
+kind: Probe
+metadata:
+  name: printer-bureau-icmp
+spec:
+  interval: 30s
+  scrapeTimeout: 10s
+  module: icmp
+  prober:
+    url: blackbox-exporter:9115
+  targets:
+    staticConfig:
+      static:
+        - bureau.printer.superquinquin.xyz
+      labels:
+        target: printer-bureau
+---
+# yaml-language-server: $schema=https://k8s-schemas.home-operations.com/monitoring.coreos.com/probe_v1.json
+apiVersion: monitoring.coreos.com/v1
+kind: Probe
+metadata:
+  name: printer-cabine-icmp
+spec:
+  interval: 30s
+  scrapeTimeout: 10s
+  module: icmp
+  prober:
+    url: blackbox-exporter:9115
+  targets:
+    staticConfig:
+      static:
+        - cabine.printer.superquinquin.xyz
+      labels:
+        target: printer-cabine

@@ -1,0 +1,63 @@
+---
+# yaml-language-server: $schema=https://k8s-schemas.home-operations.com/helm.toolkit.fluxcd.io/helmrelease_v2.json
+apiVersion: helm.toolkit.fluxcd.io/v2
+kind: HelmRelease
+metadata:
+  name: blackbox-exporter
+spec:
+  chartRef:
+    kind: OCIRepository
+    name: prometheus-blackbox-exporter
+  interval: 1h
+  values:
+    fullnameOverride: blackbox-exporter
+    securityContext:
+      runAsUser: 0
+      runAsGroup: 0
+      runAsNonRoot: false
+      readOnlyRootFilesystem: true
+      allowPrivilegeEscalation: false
+      capabilities:
+        drop:
+          - "ALL"
+        add:
+          - "NET_RAW"
+    config:
+      modules:
+        http_2xx:
+          prober: http
+          timeout: 5s
+          http:
+            valid_http_versions:
+              - "HTTP/1.1"
+              - "HTTP/2.0"
+            follow_redirects: true
+            preferred_ip_protocol: ip4
+        icmp:
+          prober: icmp
+          timeout: 5s
+          icmp:
+            preferred_ip_protocol: ip4
+    serviceMonitor:
+      enabled: true
+      selfMonitor:
+        enabled: true
+    prometheusRule:
+      enabled: true
+      rules:
+        - alert: BlackboxProbeFailed
+          expr: probe_success == 0
+          for: 5m
+          labels:
+            severity: critical
+          annotations:
+            summary: "Blackbox probe failed (instance {{ $labels.instance }})"
+            description: "Probe {{ $labels.instance }} ({{ $labels.module }}) has been failing for more than 5 minutes."
+        - alert: BlackboxProbeSlow
+          expr: probe_duration_seconds > 2
+          for: 10m
+          labels:
+            severity: warning
+          annotations:
+            summary: "Blackbox probe slow (instance {{ $labels.instance }})"
+            description: "Probe {{ $labels.instance }} took more than 2s for the last 10 minutes ({{ $value }}s)."

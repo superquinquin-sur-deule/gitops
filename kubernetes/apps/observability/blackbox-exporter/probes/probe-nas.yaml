@@ -1,0 +1,18 @@
+---
+# yaml-language-server: $schema=https://k8s-schemas.home-operations.com/monitoring.coreos.com/probe_v1.json
+apiVersion: monitoring.coreos.com/v1
+kind: Probe
+metadata:
+  name: nas-icmp
+spec:
+  interval: 30s
+  scrapeTimeout: 10s
+  module: icmp
+  prober:
+    url: blackbox-exporter:9115
+  targets:
+    staticConfig:
+      static:
+        - nas.superquinquin.xyz
+      labels:
+        target: nas
