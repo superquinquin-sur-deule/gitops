@@ -41,10 +41,11 @@ spec:
   instanceSelector:
     matchLabels:
       dashboards: grafana
+  plugins:
+    - name: victoriametrics-logs-datasource
+      version: 0.27.1
   datasource:
-    # VictoriaLogs exposes a Loki-compatible API; the loki datasource type
-    # works out of the box without installing the victoria-logs Grafana plugin.
-    type: loki
+    type: victoriametrics-logs-datasource
     name: victoria-logs
     access: proxy
-    url: http://victoria-logs.observability.svc.cluster.local:9428/select
+    url: http://victoria-logs.observability.svc.cluster.local:9428
