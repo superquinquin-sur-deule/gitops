@@ -46,10 +46,6 @@ spec:
       replicas: 0
     gateway:
       enabled: true
-      service:
-        type: LoadBalancer
-        annotations:
-          lbipam.cilium.io/ips: "192.168.7.21"
     chunksCache:
       enabled: false
     resultsCache:

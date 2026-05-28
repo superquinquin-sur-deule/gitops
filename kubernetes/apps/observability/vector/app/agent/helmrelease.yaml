@@ -1,0 +1,107 @@
+---
+# yaml-language-server: $schema=https://raw.githubusercontent.com/bjw-s-labs/helm-charts/main/charts/other/app-template/schemas/helmrelease-helm-v2.schema.json
+apiVersion: helm.toolkit.fluxcd.io/v2
+kind: HelmRelease
+metadata:
+  name: &app vector-agent
+spec:
+  interval: 30m
+  chartRef:
+    kind: OCIRepository
+    name: vector
+  install:
+    remediation:
+      retries: -1
+  upgrade:
+    cleanupOnFail: true
+    remediation:
+      retries: 3
+      strategy: rollback
+  dependsOn:
+    - name: vector-aggregator
+      namespace: observability
+  values:
+    controllers:
+      vector-agent:
+        type: daemonset
+        strategy: RollingUpdate
+        serviceAccount:
+          identifier: *app
+        annotations:
+          reloader.stakater.com/auto: "true"
+        containers:
+          app:
+            image:
+              repository: mirror.gcr.io/timberio/vector
+              tag: 0.55.0-alpine
+            env:
+              VECTOR_SELF_NODE_NAME:
+                valueFrom:
+                  fieldRef:
+                    apiVersion: v1
+                    fieldPath: spec.nodeName
+              VECTOR_SELF_POD_NAME:
+                valueFrom:
+                  fieldRef:
+                    apiVersion: v1
+                    fieldPath: metadata.name
+              VECTOR_SELF_POD_NAMESPACE:
+                valueFrom:
+                  fieldRef:
+                    apiVersion: v1
+                    fieldPath: metadata.namespace
+            args:
+              - "--config"
+              - "/etc/vector/vector.yaml"
+            securityContext:
+              # Required for host-level log collection from var-log mounts.
+              privileged: true
+    defaultPodOptions:
+      # Required so Vector can enrich pod metadata via the Kubernetes API.
+      automountServiceAccountToken: true
+      # Required to bind the Talos log receiver on host loopback (127.0.0.1:6050).
+      hostNetwork: true
+      dnsPolicy: ClusterFirstWithHostNet
+    serviceAccount:
+      vector-agent: {}
+    persistence:
+      config:
+        enabled: true
+        type: configMap
+        name: vector-agent-configmap
+        globalMounts:
+          - path: /etc/vector/vector.yaml
+            subPath: vector.yaml
+            readOnly: true
+      data:
+        type: emptyDir
+        globalMounts:
+          - path: /vector-data-dir
+      var-log:
+        type: hostPath
+        hostPath: /var/log
+        hostPathType: Directory
+        globalMounts:
+          - readOnly: true
+    rbac:
+      bindings:
+        vector-agent:
+          roleRef:
+            kind: ClusterRole
+            name: vector-agent
+          subjects:
+            - identifier: *app
+          type: ClusterRoleBinding
+      roles:
+        vector-agent:
+          rules:
+            - apiGroups:
+                - ""
+              resources:
+                - "namespaces"
+                - "nodes"
+                - "pods"
+              verbs:
+                - "list"
+                - "watch"
+          type: ClusterRole

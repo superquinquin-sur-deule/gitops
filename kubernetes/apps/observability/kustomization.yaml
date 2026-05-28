@@ -11,5 +11,6 @@ resources:
   - ./kube-prometheus-stack/ks.yaml
   - ./grafana-operator/ks.yaml
   - ./loki/ks.yaml
+  - ./vector/ks.yaml
   - ./blackbox-exporter/ks.yaml
   - ./smartctl-exporter/ks.yaml
