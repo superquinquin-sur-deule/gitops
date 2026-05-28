@@ -2,19 +2,15 @@
 apiVersion: kustomize.toolkit.fluxcd.io/v1
 kind: Kustomization
 metadata:
-  name: victoria-logs
+  name: loki
 spec:
   healthChecks:
     - apiVersion: helm.toolkit.fluxcd.io/v2
       kind: HelmRelease
-      name: victoria-logs
+      name: loki
       namespace: observability
   interval: 1h
-  path: ./kubernetes/apps/observability/victoria-logs/app
-  postBuild:
-    substituteFrom:
-      - name: cluster-secrets
-        kind: Secret
+  path: ./kubernetes/apps/observability/loki/app
   prune: true
   sourceRef:
     kind: GitRepository
@@ -26,12 +22,12 @@ spec:
 apiVersion: kustomize.toolkit.fluxcd.io/v1
 kind: Kustomization
 metadata:
-  name: victoria-logs-collector
+  name: vector
 spec:
   dependsOn:
-    - name: victoria-logs
+    - name: loki
   interval: 1h
-  path: ./kubernetes/apps/observability/victoria-logs/collector
+  path: ./kubernetes/apps/observability/loki/collector
   prune: true
   sourceRef:
     kind: GitRepository

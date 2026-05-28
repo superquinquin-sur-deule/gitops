@@ -3,12 +3,12 @@
 apiVersion: source.toolkit.fluxcd.io/v1
 kind: OCIRepository
 metadata:
-  name: victoria-logs
+  name: vector
 spec:
   interval: 15m
   layerSelector:
     mediaType: application/vnd.cncf.helm.chart.content.v1.tar+gzip
     operation: copy
   ref:
-    tag: 0.12.5
-  url: oci://ghcr.io/victoriametrics/helm-charts/victoria-logs-single
+    tag: 0.52.0
+  url: oci://ghcr.io/vectordotdev/helm-charts/vector

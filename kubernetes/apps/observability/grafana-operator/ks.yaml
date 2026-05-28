@@ -27,7 +27,7 @@ spec:
   dependsOn:
     - name: grafana-operator
     - name: kube-prometheus-stack
-    - name: victoria-logs
+    - name: loki
     - name: external-secrets-stores
       namespace: external-secrets
   interval: 1h
