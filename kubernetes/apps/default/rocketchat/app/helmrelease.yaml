@@ -36,6 +36,3 @@ spec:
       limits:
         cpu: 1000m
         memory: 2Gi
-    extraEnv: |
-      - name: ROOT_URL
-        value: https://lechat.${SECRET_DOMAIN}
