@@ -15,11 +15,12 @@ spec:
         replicas: 1
         annotations:
           reloader.stakater.com/auto: "true"
+        strategy: RollingUpdate
         containers:
           main:
             image:
               repository: ghcr.io/superquinquin-sur-deule/sesame
-              tag: latest@sha256:9d8facbee5ba4109de34968f3b5e2cad38b967d16875915f6509694136627128
+              tag: 1.1.0@sha256:1ef0622a1708c3d10244a513a04a3f4e1493d1e88e4200089545a48a2c16ce28
 
             envFrom:
               - secretRef:
