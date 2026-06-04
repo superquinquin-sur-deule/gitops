@@ -14,13 +14,13 @@ spec:
       feedback_links_enabled: "false"
       reporting_enabled: "false"
     auth:
-      disable_login_form: "false"
       oauth_allow_insecure_email_lookup: "true"
+      oauth_auto_login: "true"
     auth.anonymous:
       enabled: "false"
     auth.generic_oauth:
       enabled: "true"
-      name: Keycloak
+      name: SSO
       client_id: grafana
       scopes: "openid email profile offline_access roles"
       auth_url: https://auth.${SECRET_DOMAIN}/realms/surdeule/protocol/openid-connect/auth
