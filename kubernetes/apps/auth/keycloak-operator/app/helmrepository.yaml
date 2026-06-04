@@ -5,4 +5,4 @@ metadata:
   name: epamedp
 spec:
   interval: 1h
-  url: https://epam.github.io/edp-helm-charts/stable
+  url: https://epam.github.io/edp-helm-charts/snapshot
