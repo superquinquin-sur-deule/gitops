@@ -16,3 +16,14 @@ spec:
     - https://grafana.${SECRET_DOMAIN}/login/generic_oauth
   webOrigins:
     - https://grafana.${SECRET_DOMAIN}
+  protocolMappers:
+    - name: realm-roles
+      protocol: openid-connect
+      protocolMapper: oidc-usermodel-realm-role-mapper
+      config:
+        multivalued: "true"
+        access.token.claim: "true"
+        id.token.claim: "true"
+        userinfo.token.claim: "true"
+        claim.name: roles
+        jsonType.label: String

@@ -29,7 +29,7 @@ spec:
       login_attribute_path: preferred_username
       name_attribute_path: name
       email_attribute_path: email
-      role_attribute_path: "contains(realm_access.roles[*], 'grafana-admin') && 'Admin' || contains(realm_access.roles[*], 'grafana-editor') && 'Editor' || 'Viewer'"
+      role_attribute_path: "contains(roles[*], 'Foodcoop Admin') && 'Admin' || 'Viewer'"
       role_attribute_strict: "false"
       allow_sign_up: "true"
       use_pkce: "true"
