@@ -1,8 +1,6 @@
 ---
-# Connection to the in-cluster Keycloak server. Authenticates as the bootstrap
-# admin (kcadmin) of the master realm via password grant (admin-cli).
-apiVersion: v1.edp.epam.com/v1
-kind: Keycloak
+apiVersion: v1.edp.epam.com/v1alpha1
+kind: ClusterKeycloak
 metadata:
   name: surdeule
 spec:

@@ -6,7 +6,7 @@ metadata:
 spec:
   realmRef:
     name: surdeule
-    kind: KeycloakRealm
+    kind: ClusterKeycloakRealm
   name: odoo-user-storage
   providerId: odoo-user-storage
   providerType: org.keycloak.storage.UserStorageProvider
