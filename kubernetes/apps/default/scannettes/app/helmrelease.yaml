@@ -54,6 +54,13 @@ spec:
 
     route:
       app:
+        annotations:
+          gethomepage.dev/enabled: "true"
+          gethomepage.dev/name: Scannettes
+          gethomepage.dev/group: Superquinquin
+          gethomepage.dev/icon: mdi-barcode-scan
+          gethomepage.dev/description: Inventaire & réception
+          gethomepage.dev/siteMonitor: "https://scannettes.${SECRET_DOMAIN}"
         hostnames:
           - "scannettes.${SECRET_DOMAIN}"
         parentRefs:

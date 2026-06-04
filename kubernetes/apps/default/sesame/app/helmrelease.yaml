@@ -42,6 +42,13 @@ spec:
 
     route:
       app:
+        annotations:
+          gethomepage.dev/enabled: "true"
+          gethomepage.dev/name: Sésame
+          gethomepage.dev/group: Superquinquin
+          gethomepage.dev/icon: mdi-key-chain-variant
+          gethomepage.dev/description: Gestion des accès
+          gethomepage.dev/siteMonitor: "https://sesame.${SECRET_DOMAIN}"
         hostnames:
           - "sesame.${SECRET_DOMAIN}"
         parentRefs:

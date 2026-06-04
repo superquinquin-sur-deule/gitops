@@ -65,6 +65,13 @@ spec:
 
     route:
       app:
+        annotations:
+          gethomepage.dev/enabled: "true"
+          gethomepage.dev/name: Accueil
+          gethomepage.dev/group: Superquinquin
+          gethomepage.dev/icon: mdi-home-heart
+          gethomepage.dev/description: Page d'accueil
+          gethomepage.dev/siteMonitor: "https://accueil.${SECRET_DOMAIN}"
         hostnames:
           - "accueil.${SECRET_DOMAIN}"
         parentRefs:

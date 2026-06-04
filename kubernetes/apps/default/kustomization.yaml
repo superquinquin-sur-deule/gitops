@@ -13,4 +13,4 @@ resources:
   - ./accueil/ks.yaml
   - ./scannettes/ks.yaml
   - ./rocketchat/ks.yaml
-  - ./hajimari/ks.yaml
+  - ./homepage/ks.yaml

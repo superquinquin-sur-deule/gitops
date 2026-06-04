@@ -3,6 +3,13 @@ apiVersion: gateway.networking.k8s.io/v1
 kind: HTTPRoute
 metadata:
   name: openbao
+  annotations:
+    gethomepage.dev/enabled: "true"
+    gethomepage.dev/name: OpenBao
+    gethomepage.dev/group: Infrastructure
+    gethomepage.dev/icon: openbao.png
+    gethomepage.dev/description: Gestion des secrets
+    gethomepage.dev/siteMonitor: "https://bao.${SECRET_DOMAIN}"
 spec:
   hostnames:
     - "bao.${SECRET_DOMAIN}"

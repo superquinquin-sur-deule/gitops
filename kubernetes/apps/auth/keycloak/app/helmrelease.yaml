@@ -95,6 +95,13 @@ spec:
 
     route:
       app:
+        annotations:
+          gethomepage.dev/enabled: "true"
+          gethomepage.dev/name: Keycloak
+          gethomepage.dev/group: Infrastructure
+          gethomepage.dev/icon: keycloak.png
+          gethomepage.dev/description: Authentification (SSO)
+          gethomepage.dev/siteMonitor: "https://auth.${SECRET_DOMAIN}"
         hostnames:
           - *host
         parentRefs:

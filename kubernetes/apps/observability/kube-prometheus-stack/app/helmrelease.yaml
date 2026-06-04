@@ -19,6 +19,13 @@ spec:
       route:
         main:
           enabled: true
+          annotations:
+            gethomepage.dev/enabled: "true"
+            gethomepage.dev/name: Alertmanager
+            gethomepage.dev/group: Infrastructure
+            gethomepage.dev/icon: alertmanager.png
+            gethomepage.dev/description: Gestion des alertes
+            gethomepage.dev/siteMonitor: "https://alertmanager.${SECRET_DOMAIN}"
           hostnames:
             - alertmanager.${SECRET_DOMAIN}
           parentRefs:
@@ -45,6 +52,13 @@ spec:
       route:
         main:
           enabled: true
+          annotations:
+            gethomepage.dev/enabled: "true"
+            gethomepage.dev/name: Prometheus
+            gethomepage.dev/group: Infrastructure
+            gethomepage.dev/icon: prometheus.png
+            gethomepage.dev/description: Base de métriques
+            gethomepage.dev/siteMonitor: "https://prometheus.${SECRET_DOMAIN}"
           hostnames:
             - prometheus.${SECRET_DOMAIN}
           parentRefs:
