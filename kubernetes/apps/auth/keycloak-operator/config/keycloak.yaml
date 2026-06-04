@@ -8,7 +8,9 @@ spec:
   auth:
     passwordGrant:
       username:
-        value: kcadmin
+        secretKeyRef:
+          name: keycloak-secret
+          key: KC_BOOTSTRAP_ADMIN_USERNAME
       passwordRef:
-        name: keycloak-admin
-        key: password
+        name: keycloak-secret
+        key: KC_BOOTSTRAP_ADMIN_PASSWORD
