@@ -1,0 +1,25 @@
+---
+apiVersion: v1.edp.epam.com/v1
+kind: KeycloakRealmComponent
+metadata:
+  name: odoo-user-storage
+spec:
+  realmRef:
+    name: surdeule
+    kind: KeycloakRealm
+  name: odoo-user-storage
+  providerId: odoo-user-storage
+  providerType: org.keycloak.storage.UserStorageProvider
+  config:
+    enabled:
+      - "true"
+    cachePolicy:
+      - "DEFAULT"
+    odoo-url:
+      - "$keycloak-odoo:odoo-url"
+    odoo-database:
+      - "$keycloak-odoo:odoo-database"
+    admin-login:
+      - "$keycloak-odoo:admin-login"
+    admin-password:
+      - "$keycloak-odoo:admin-password"

@@ -1,0 +1,20 @@
+---
+apiVersion: helm.toolkit.fluxcd.io/v2
+kind: HelmRelease
+metadata:
+  name: crunchy-pgo
+spec:
+  interval: 1h
+  chartRef:
+    kind: OCIRepository
+    name: crunchy-pgo
+  values:
+    singleNamespace: false
+    controllerImages:
+      cluster: registry.developers.crunchydata.com/crunchydata/postgres-operator:ubi9-6.0.1-0
+    resources:
+      requests:
+        cpu: 25m
+        memory: 128Mi
+      limits:
+        memory: 256Mi

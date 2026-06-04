@@ -1,0 +1,24 @@
+---
+# Static NFS PV on the NAS, used as the pgBackRest "posix" backup repository.
+# pgBackRest writes base backups + WAL directly here over NFS (no S3/MinIO needed).
+# ⚠️ On the NAS export, the repo directory must be group 26 (postgres) so the
+#    pgBackRest container (runs as uid/gid 26) can write — see Crunchy NFS notes.
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: pg-main-pgbackrest-nfs
+  labels:
+    app.kubernetes.io/component: pg-main-pgbackrest-repo
+spec:
+  capacity:
+    storage: 100Gi
+  accessModes:
+    - ReadWriteMany
+  persistentVolumeReclaimPolicy: Retain
+  storageClassName: ""
+  mountOptions:
+    - nfsvers=4.1
+    - hard
+  nfs:
+    server: 192.168.7.50
+    path: /volume1/backup/postgres/pg-main

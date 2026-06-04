@@ -1,0 +1,14 @@
+---
+apiVersion: v1.edp.epam.com/v1
+kind: KeycloakRealm
+metadata:
+  name: surdeule
+spec:
+  realmName: surdeule
+  displayName: SuperQuinquin sur Deule
+  keycloakRef:
+    name: surdeule
+    kind: Keycloak
+  frontendUrl: "https://keycloak.${SECRET_DOMAIN}"
+  themes:
+    loginTheme: surdeule

@@ -1,0 +1,97 @@
+---
+# yaml-language-server: $schema=https://raw.githubusercontent.com/bjw-s-labs/helm-charts/main/charts/other/app-template/schemas/helmrelease-helm-v2.schema.json
+apiVersion: helm.toolkit.fluxcd.io/v2
+kind: HelmRelease
+metadata:
+  name: &app keycloak
+spec:
+  interval: 1h
+  chartRef:
+    kind: OCIRepository
+    name: *app
+  values:
+    controllers:
+      keycloak:
+        replicas: 1
+        strategy: Recreate
+        annotations:
+          reloader.stakater.com/auto: "true"
+        containers:
+          main:
+            image:
+              repository: ghcr.io/superquinquin-sur-deule/sqq-keycloak
+              tag: main
+            # Non-optimized start: the image was built (`kc.sh build`) without KC_DB,
+            # so it re-augments at startup with KC_DB=postgres. Switch to
+            # ["start", "--optimized"] once the image bakes KC_DB=postgres at build time.
+            args:
+              - "start"
+            env:
+              KC_DB: postgres
+              KC_HOSTNAME: &host "auth.${SECRET_DOMAIN}"
+              KC_PROXY_HEADERS: xforwarded
+              KC_HTTP_ENABLED: "true"
+              KC_HEALTH_ENABLED: "true"
+              KC_METRICS_ENABLED: "true"
+
+            envFrom:
+              - secretRef:
+                  name: keycloak-secret
+
+            probes:
+              liveness:
+                enabled: true
+                custom: true
+                spec:
+                  httpGet:
+                    path: /health/live
+                    port: 9000
+                  initialDelaySeconds: 30
+                  periodSeconds: 15
+                  failureThreshold: 3
+              readiness:
+                enabled: true
+                custom: true
+                spec:
+                  httpGet:
+                    path: /health/ready
+                    port: 9000
+                  initialDelaySeconds: 20
+                  periodSeconds: 10
+                  failureThreshold: 3
+              startup:
+                enabled: true
+                custom: true
+                spec:
+                  httpGet:
+                    path: /health/started
+                    port: 9000
+                  periodSeconds: 10
+                  failureThreshold: 30
+            resources:
+              requests:
+                cpu: 200m
+                memory: 768Mi
+              limits:
+                memory: 1536Mi
+
+    service:
+      main:
+        controller: keycloak
+        ports:
+          http:
+            port: &port 8080
+          management:
+            port: 9000
+
+    route:
+      app:
+        hostnames:
+          - *host
+        parentRefs:
+          - name: envoy-external
+            namespace: network
+        rules:
+          - backendRefs:
+              - name: *app
+                port: *port
