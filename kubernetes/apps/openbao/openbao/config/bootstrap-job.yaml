@@ -88,9 +88,15 @@ spec:
                 echo "    already enabled"
               fi
 
+              echo "==> Exposing OIDC on the unauthenticated login screen"
+              bao auth tune -listing-visibility="unauth" oidc/
+
               echo "==> Writing policy oidc-admin"
               bao policy write oidc-admin - <<'EOF'
               path "apps/*" {
+                capabilities = ["create", "read", "update", "delete", "list"]
+              }
+              path "secret/*" {
                 capabilities = ["create", "read", "update", "delete", "list"]
               }
               path "sys/mounts" {
