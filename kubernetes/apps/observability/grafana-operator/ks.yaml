@@ -30,6 +30,8 @@ spec:
     - name: loki
     - name: external-secrets-stores
       namespace: external-secrets
+    - name: keycloak-operator
+      namespace: auth
   interval: 1h
   path: ./kubernetes/apps/observability/grafana-operator/instance
   postBuild:

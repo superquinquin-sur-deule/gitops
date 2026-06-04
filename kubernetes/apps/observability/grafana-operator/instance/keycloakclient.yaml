@@ -1,0 +1,18 @@
+---
+apiVersion: v1.edp.epam.com/v1
+kind: KeycloakClient
+metadata:
+  name: grafana
+spec:
+  realmRef:
+    name: surdeule
+    kind: ClusterKeycloakRealm
+  clientId: grafana
+  public: false
+  directAccess: false
+  secret: $$grafana-secret:GF_AUTH_GENERIC_OAUTH_CLIENT_SECRET
+  webUrl: https://grafana.${SECRET_DOMAIN}
+  redirectUris:
+    - https://grafana.${SECRET_DOMAIN}/login/generic_oauth
+  webOrigins:
+    - https://grafana.${SECRET_DOMAIN}
