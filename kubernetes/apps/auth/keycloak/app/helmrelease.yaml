@@ -33,6 +33,15 @@ spec:
               KC_HTTP_ENABLED: "true"
               KC_HEALTH_ENABLED: "true"
               KC_METRICS_ENABLED: "true"
+              KC_SPI_CORS_ENABLED: "true"
+              KC_CACHE: "ispn"
+              KC_CACHE_EMBEDDED_NETWORK_BIND_ADDRESS: "$${POD_ID}"
+              KC_SPI_CORS_ORIGINS: "*"
+              KC_SPI_CORS_METHODS: "GET,HEAD,OPTIONS,POST,PUT,DELETE"
+              KC_SPI_CORS_HEADERS: "Authorization,Content-Type,Accept,Origin,X-Requested-With"
+              KC_SPI_CORS_EXPOSED_HEADERS: "Content-Disposition,Content-Length,Content-Type"
+              KC_SPI_CORS_ALLOW_CREDENTIALS: "true"
+              KC_SPI_CORS_MAX_AGE: "3600"
 
             envFrom:
               - secretRef:
