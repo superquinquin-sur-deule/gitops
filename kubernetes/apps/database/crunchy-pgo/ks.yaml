@@ -11,6 +11,10 @@ spec:
       namespace: database
   interval: 1h
   path: ./kubernetes/apps/database/crunchy-pgo/app
+  postBuild:
+    substituteFrom:
+      - name: cluster-secrets
+        kind: Secret
   prune: true
   sourceRef:
     kind: GitRepository
@@ -28,6 +32,10 @@ spec:
     - name: crunchy-pgo
   interval: 1h
   path: ./kubernetes/apps/database/crunchy-pgo/main
+  postBuild:
+    substituteFrom:
+      - name: cluster-secrets
+        kind: Secret
   prune: true
   sourceRef:
     kind: GitRepository
@@ -45,6 +53,10 @@ spec:
     - name: crunchy-pgo
   interval: 1h
   path: ./kubernetes/apps/database/crunchy-pgo/crunchy-users
+  postBuild:
+    substituteFrom:
+      - name: cluster-secrets
+        kind: Secret
   prune: true
   sourceRef:
     kind: GitRepository
