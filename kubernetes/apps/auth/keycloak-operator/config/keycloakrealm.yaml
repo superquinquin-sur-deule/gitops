@@ -9,6 +9,6 @@ spec:
   keycloakRef:
     name: surdeule
     kind: Keycloak
-  frontendUrl: "https://keycloak.${SECRET_DOMAIN}"
+  frontendUrl: "https://auth.${SECRET_DOMAIN}"
   themes:
     loginTheme: surdeule

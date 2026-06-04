@@ -4,11 +4,21 @@ apiVersion: postgres-operator.crunchydata.com/v1beta1
 kind: PostgresCluster
 metadata:
   name: pg-main
+  labels:
+    crunchy-users.henrywhitaker3.github.com/watch: "true"
+  annotations:
+    crunchy-users.henrywhitaker3.github.com/superuser: "postgres"
 spec:
   postgresVersion: 16
   image: registry.developers.crunchydata.com/crunchydata/crunchy-postgres:ubi9-16.13-2610
 
   users:
+    - name: "postgres"
+      databases:
+        - "postgres"
+      options: "SUPERUSER"
+      password:
+        type: AlphaNumeric
     - name: keycloak
       databases:
         - keycloak
