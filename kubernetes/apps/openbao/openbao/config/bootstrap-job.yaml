@@ -24,6 +24,11 @@ spec:
                 secretKeyRef:
                   name: openbao-unseal
                   key: ROOT_TOKEN
+            - name: SECRET_DOMAIN
+              valueFrom:
+                secretKeyRef:
+                  name: cluster-secrets
+                  key: SECRET_DOMAIN
           command:
             - /bin/sh
             - -ec
@@ -75,6 +80,68 @@ spec:
                 bound_service_account_namespaces=external-secrets \
                 policies=eso-reader \
                 ttl=1h
+
+              echo "==> Ensuring OIDC auth method enabled"
+              if ! bao auth list -format=json | grep -q '"oidc/"'; then
+                bao auth enable oidc
+              else
+                echo "    already enabled"
+              fi
+
+              echo "==> Writing policy oidc-admin"
+              bao policy write oidc-admin - <<'EOF'
+              path "apps/*" {
+                capabilities = ["create", "read", "update", "delete", "list"]
+              }
+              path "sys/mounts" {
+                capabilities = ["read", "list"]
+              }
+              path "sys/mounts/*" {
+                capabilities = ["read", "list"]
+              }
+              path "sys/auth" {
+                capabilities = ["read", "list"]
+              }
+              path "sys/policies/acl" {
+                capabilities = ["read", "list"]
+              }
+              path "sys/policies/acl/*" {
+                capabilities = ["create", "read", "update", "delete", "list"]
+              }
+              path "auth/*" {
+                capabilities = ["create", "read", "update", "delete", "list"]
+              }
+              EOF
+
+              echo "==> Reading OIDC client secret from apps/openbao/auth"
+              CLIENT_SECRET="$(bao kv get -field=CLIENT_SECRET apps/openbao/auth 2>/dev/null || true)"
+              if [ -z "$CLIENT_SECRET" ]; then
+                echo "    WARNING: apps/openbao/auth CLIENT_SECRET not found — skipping OIDC config."
+                echo "    Seed it then re-run: bao kv put apps/openbao/auth CLIENT_SECRET=<value>"
+              else
+                echo "==> Configuring OIDC auth method"
+                bao write auth/oidc/config \
+                  oidc_discovery_url="https://auth.${SECRET_DOMAIN}/realms/surdeule" \
+                  oidc_client_id="openbao" \
+                  oidc_client_secret="$CLIENT_SECRET" \
+                  default_role="admin"
+
+                echo "==> Creating OIDC role admin"
+                bao write auth/oidc/role/admin - <<EOF
+              {
+                "user_claim": "preferred_username",
+                "bound_audiences": ["openbao"],
+                "allowed_redirect_uris": [
+                  "https://bao.${SECRET_DOMAIN}/ui/vault/auth/oidc/oidc/callback",
+                  "http://localhost:8250/oidc/callback"
+                ],
+                "bound_claims": {"roles": ["Foodcoop Admin"]},
+                "oidc_scopes": ["openid", "profile", "email"],
+                "token_policies": ["oidc-admin"],
+                "token_ttl": "1h"
+              }
+              EOF
+              fi
 
               echo "Bootstrap complete."
           resources:

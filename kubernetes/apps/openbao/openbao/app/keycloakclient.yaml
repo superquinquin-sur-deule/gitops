@@ -1,0 +1,30 @@
+---
+apiVersion: v1.edp.epam.com/v1
+kind: KeycloakClient
+metadata:
+  name: openbao
+spec:
+  realmRef:
+    name: surdeule
+    kind: ClusterKeycloakRealm
+  clientId: openbao
+  public: false
+  directAccess: false
+  secret: $$openbao-oidc:CLIENT_SECRET
+  webUrl: https://bao.${SECRET_DOMAIN}
+  redirectUris:
+    - https://bao.${SECRET_DOMAIN}/ui/vault/auth/oidc/oidc/callback
+    - http://localhost:8250/oidc/callback
+  webOrigins:
+    - https://bao.${SECRET_DOMAIN}
+  protocolMappers:
+    - name: realm-roles
+      protocol: openid-connect
+      protocolMapper: oidc-usermodel-realm-role-mapper
+      config:
+        multivalued: "true"
+        access.token.claim: "true"
+        id.token.claim: "true"
+        userinfo.token.claim: "true"
+        claim.name: roles
+        jsonType.label: String

@@ -7,3 +7,5 @@ resources:
   - ./secret-unseal.sops.yaml
   - ./auto-unseal.yaml
   - ./httproute.yaml
+  - ./externalsecret.yaml
+  - ./keycloakclient.yaml
