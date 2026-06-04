@@ -71,7 +71,7 @@ spec:
           gethomepage.dev/group: Infrastructure
           gethomepage.dev/icon: kopia.png
           gethomepage.dev/description: Sauvegardes
-          gethomepage.dev/siteMonitor: "https://kopia.${SECRET_DOMAIN}"
+          gethomepage.dev/external: "true"
         hostnames:
           - "kopia.${SECRET_DOMAIN}"
         parentRefs:

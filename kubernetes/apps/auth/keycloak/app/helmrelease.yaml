@@ -101,7 +101,7 @@ spec:
           gethomepage.dev/group: Infrastructure
           gethomepage.dev/icon: keycloak.png
           gethomepage.dev/description: Authentification (SSO)
-          gethomepage.dev/siteMonitor: "https://auth.${SECRET_DOMAIN}"
+          gethomepage.dev/external: "true"
         hostnames:
           - *host
         parentRefs:

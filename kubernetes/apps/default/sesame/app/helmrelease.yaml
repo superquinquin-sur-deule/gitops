@@ -48,7 +48,7 @@ spec:
           gethomepage.dev/group: Superquinquin
           gethomepage.dev/icon: mdi-key-chain-variant
           gethomepage.dev/description: Gestion des accès
-          gethomepage.dev/siteMonitor: "https://sesame.${SECRET_DOMAIN}"
+          gethomepage.dev/external: "true"
         hostnames:
           - "sesame.${SECRET_DOMAIN}"
         parentRefs:

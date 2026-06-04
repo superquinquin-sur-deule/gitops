@@ -9,7 +9,7 @@ metadata:
     gethomepage.dev/group: Superquinquin
     gethomepage.dev/icon: rocket-chat.png
     gethomepage.dev/description: Messagerie (Rocket.Chat)
-    gethomepage.dev/siteMonitor: "https://lechat.${SECRET_DOMAIN}"
+    gethomepage.dev/external: "true"
 spec:
   hostnames:
     - "lechat.${SECRET_DOMAIN}"

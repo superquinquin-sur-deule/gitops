@@ -9,7 +9,7 @@ metadata:
     gethomepage.dev/group: Infrastructure
     gethomepage.dev/icon: grafana.png
     gethomepage.dev/description: Dashboards & métriques
-    gethomepage.dev/siteMonitor: "https://grafana.${SECRET_DOMAIN}"
+    gethomepage.dev/external: "true"
 spec:
   hostnames:
     - "grafana.${SECRET_DOMAIN}"

@@ -25,7 +25,7 @@ spec:
             gethomepage.dev/group: Infrastructure
             gethomepage.dev/icon: alertmanager.png
             gethomepage.dev/description: Gestion des alertes
-            gethomepage.dev/siteMonitor: "https://alertmanager.${SECRET_DOMAIN}"
+            gethomepage.dev/external: "true"
           hostnames:
             - alertmanager.${SECRET_DOMAIN}
           parentRefs:
@@ -58,7 +58,7 @@ spec:
             gethomepage.dev/group: Infrastructure
             gethomepage.dev/icon: prometheus.png
             gethomepage.dev/description: Base de métriques
-            gethomepage.dev/siteMonitor: "https://prometheus.${SECRET_DOMAIN}"
+            gethomepage.dev/external: "true"
           hostnames:
             - prometheus.${SECRET_DOMAIN}
           parentRefs:
