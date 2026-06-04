@@ -16,10 +16,10 @@ spec:
     cachePolicy:
       - "DEFAULT"
     odoo-url:
-      - "$keycloak-odoo:odoo-url"
+      - "$$keycloak-odoo:odoo-url"
     odoo-database:
-      - "$keycloak-odoo:odoo-database"
+      - "$$keycloak-odoo:odoo-database"
     admin-login:
-      - "$keycloak-odoo:admin-login"
+      - "$$keycloak-odoo:admin-login"
     admin-password:
-      - "$keycloak-odoo:admin-password"
+      - "$$keycloak-odoo:admin-password"
