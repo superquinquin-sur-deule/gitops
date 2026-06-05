@@ -48,7 +48,11 @@ spec:
 
       bookmarks: []
 
-      services: []
+      services:
+        - Superquinquin:
+            - Métabase:
+                href: https://metabase-deule.${SQQ_DOMAIN}
+                description: Business intelligence
 
       widgets:
         - greeting:
