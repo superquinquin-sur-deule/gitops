@@ -1,0 +1,150 @@
+---
+# yaml-language-server: $schema=https://raw.githubusercontent.com/bjw-s-labs/helm-charts/main/charts/other/app-template/schemas/helmrelease-helm-v2.schema.json
+apiVersion: helm.toolkit.fluxcd.io/v2
+kind: HelmRelease
+metadata:
+  name: &app outline
+spec:
+  interval: 1h
+  chartRef:
+    kind: OCIRepository
+    name: *app
+  values:
+    controllers:
+      main:
+        replicas: 1
+        annotations:
+          reloader.stakater.com/auto: "true"
+        containers:
+          main:
+            image:
+              repository: docker.io/outlinewiki/outline
+              tag: "1.8.0"
+            env:
+              NODE_ENV: production
+              PORT: "3000"
+              URL: "https://wiki.${SECRET_DOMAIN}"
+              FORCE_HTTPS: "true"
+              PGSSLMODE: disable
+              REDIS_URL: redis://outline-redis:6379
+              FILE_STORAGE: local
+              FILE_STORAGE_LOCAL_ROOT_DIR: &dataDir /var/lib/outline/data
+              FILE_STORAGE_UPLOAD_MAX_SIZE: "262144000"
+              OIDC_DISPLAY_NAME: Keycloak
+              OIDC_USERNAME_CLAIM: preferred_username
+              OIDC_SCOPES: openid profile email
+              OIDC_AUTH_URI: "https://auth.${SECRET_DOMAIN}/realms/surdeule/protocol/openid-connect/auth"
+              OIDC_TOKEN_URI: "https://auth.${SECRET_DOMAIN}/realms/surdeule/protocol/openid-connect/token"
+              OIDC_USERINFO_URI: "https://auth.${SECRET_DOMAIN}/realms/surdeule/protocol/openid-connect/userinfo"
+              OIDC_LOGOUT_URI: "https://auth.${SECRET_DOMAIN}/realms/surdeule/protocol/openid-connect/logout"
+            envFrom:
+              - secretRef:
+                  name: outline-secret
+            probes:
+              liveness: &probe
+                enabled: true
+                custom: true
+                spec:
+                  httpGet:
+                    path: /_health
+                    port: 3000
+                  initialDelaySeconds: 30
+                  periodSeconds: 15
+                  failureThreshold: 5
+              readiness: *probe
+              startup:
+                enabled: true
+                custom: true
+                spec:
+                  httpGet:
+                    path: /_health
+                    port: 3000
+                  periodSeconds: 10
+                  failureThreshold: 30
+            resources:
+              requests:
+                cpu: 100m
+                memory: 512Mi
+              limits:
+                memory: 1536Mi
+
+      redis:
+        replicas: 1
+        containers:
+          redis:
+            image:
+              repository: docker.io/library/redis
+              tag: "7.4-alpine"
+            command:
+              - redis-server
+              - --save
+              - ""
+              - --appendonly
+              - "no"
+            probes:
+              liveness: &redisProbe
+                enabled: true
+                custom: true
+                spec:
+                  exec:
+                    command:
+                      - "redis-cli"
+                      - "ping"
+                  initialDelaySeconds: 10
+                  periodSeconds: 15
+              readiness: *redisProbe
+            resources:
+              requests:
+                cpu: 10m
+                memory: 32Mi
+              limits:
+                memory: 256Mi
+
+    service:
+      main:
+        controller: main
+        ports:
+          http:
+            port: &port 3000
+      redis:
+        controller: redis
+        ports:
+          redis:
+            port: 6379
+
+    persistence:
+      data:
+        type: persistentVolumeClaim
+        accessMode: ReadWriteOnce
+        size: 10Gi
+        storageClass: ceph-block
+        advancedMounts:
+          main:
+            main:
+              - path: *dataDir
+      redis-data:
+        type: emptyDir
+        advancedMounts:
+          redis:
+            redis:
+              - path: /data
+
+    route:
+      app:
+        annotations:
+          gethomepage.dev/enabled: "true"
+          gethomepage.dev/name: Outline
+          gethomepage.dev/group: Superquinquin
+          gethomepage.dev/icon: outline.png
+          gethomepage.dev/description: Base de connaissances (wiki)
+          gethomepage.dev/external: "true"
+        hostnames:
+          - "wiki.${SECRET_DOMAIN}"
+        parentRefs:
+          - name: envoy-external
+            namespace: network
+            sectionName: https
+        rules:
+          - backendRefs:
+              - name: outline-main
+                port: *port

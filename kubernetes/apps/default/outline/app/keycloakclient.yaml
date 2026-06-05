@@ -1,0 +1,18 @@
+---
+apiVersion: v1.edp.epam.com/v1
+kind: KeycloakClient
+metadata:
+  name: outline
+spec:
+  realmRef:
+    name: surdeule
+    kind: ClusterKeycloakRealm
+  clientId: outline
+  public: false
+  directAccess: false
+  secret: $$outline-secret:OIDC_CLIENT_SECRET
+  webUrl: https://wiki.${SECRET_DOMAIN}
+  redirectUris:
+    - https://wiki.${SECRET_DOMAIN}/auth/oidc.callback
+  webOrigins:
+    - https://wiki.${SECRET_DOMAIN}
