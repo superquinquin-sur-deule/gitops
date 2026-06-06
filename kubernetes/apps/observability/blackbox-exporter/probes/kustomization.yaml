@@ -6,3 +6,4 @@ resources:
   - ./probe-accueil.yaml
   - ./probe-printers.yaml
   - ./probe-gestion-sdl.yaml
+  - ./probe-caisses.yaml
