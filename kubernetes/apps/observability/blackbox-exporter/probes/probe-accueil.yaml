@@ -16,3 +16,39 @@ spec:
         - accueil-01.superquinquin.xyz
       labels:
         target: accueil-01
+---
+# yaml-language-server: $schema=https://k8s-schemas.home-operations.com/monitoring.coreos.com/probe_v1.json
+apiVersion: monitoring.coreos.com/v1
+kind: Probe
+metadata:
+  name: accueil-http
+spec:
+  interval: 30s
+  scrapeTimeout: 10s
+  module: http_2xx
+  prober:
+    url: blackbox-exporter:9115
+  targets:
+    staticConfig:
+      static:
+        - https://accueil.${SECRET_DOMAIN}
+      labels:
+        target: accueil
+---
+# yaml-language-server: $schema=https://k8s-schemas.home-operations.com/monitoring.coreos.com/probe_v1.json
+apiVersion: monitoring.coreos.com/v1
+kind: Probe
+metadata:
+  name: sesame-http
+spec:
+  interval: 30s
+  scrapeTimeout: 10s
+  module: http_2xx
+  prober:
+    url: blackbox-exporter:9115
+  targets:
+    staticConfig:
+      static:
+        - https://sesame.${SECRET_DOMAIN}
+      labels:
+        target: sesame
