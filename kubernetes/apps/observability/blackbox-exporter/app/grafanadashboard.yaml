@@ -11,4 +11,4 @@ spec:
   datasources:
     - datasourceName: prometheus
       inputName: DS_PROMETHEUS
-  url: https://grafana.com/api/dashboards/18538/revisions/1/download
+  url: https://grafana.com/api/dashboards/13587/revisions/1/download
