@@ -5,3 +5,4 @@ resources:
   - ./probe-nas.yaml
   - ./probe-accueil.yaml
   - ./probe-printers.yaml
+  - ./probe-gestion-sdl.yaml
