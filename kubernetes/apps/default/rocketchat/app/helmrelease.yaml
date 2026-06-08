@@ -15,16 +15,23 @@ spec:
   values:
     host: lechat.${SECRET_DOMAIN}
     replicaCount: 1
+    # Pinned to 8.1.5 (chart 6.32.1 default appVersion is 8.2.0). 8.2.0 added an
+    # SSRF firewall but does not pass SSRF_Allowlist to Custom OAuth fetches, so
+    # Keycloak SSO fails with error-ssrf-validation-failed. Fix is unreleased PR
+    # RocketChat/Rocket.Chat#40587 — bump back to 8.2.x once it ships in a release.
+    # Migration-safe: 8.1.5 and 8.2.0 are both at DB migration v335.
+    image:
+      tag: "8.1.5"
     podAnnotations:
       reloader.stakater.com/auto: "true"
     mongodb:
       enabled: false
     existingMongodbSecret: rocketchat-mongodb
     extraEnv:
-      # Rocket.Chat's SSRF firewall (8.2.0+) blocks server-side OAuth calls whose
-      # host resolves to a private IP. auth.${SECRET_DOMAIN} resolves to the
-      # internal envoy gateway, so the token/userinfo exchange must be allowlisted
-      # by hostname (matched before the private-range check in checkForSsrfWithIp).
+      # Inert on 8.1.5 (no SSRF firewall). Kept so the eventual re-upgrade to a
+      # release containing RocketChat/Rocket.Chat#40587 works without changes:
+      # then this allowlists the internal-resolving auth.${SECRET_DOMAIN} host for
+      # the server-side OAuth token/userinfo exchange.
       - name: "OVERWRITE_SETTING_SSRF_Allowlist"
         value: "auth.${SECRET_DOMAIN}"
       - name: "OVERWRITE_SETTING_Accounts_OAuth_Custom-Keycloak"
