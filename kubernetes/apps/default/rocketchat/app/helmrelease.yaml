@@ -15,9 +15,61 @@ spec:
   values:
     host: lechat.${SECRET_DOMAIN}
     replicaCount: 1
+    podAnnotations:
+      reloader.stakater.com/auto: "true"
     mongodb:
       enabled: false
     existingMongodbSecret: rocketchat-mongodb
+    extraEnv:
+      # Rocket.Chat's SSRF firewall (8.2.0+) blocks server-side OAuth calls whose
+      # host resolves to a private IP. auth.${SECRET_DOMAIN} resolves to the
+      # internal envoy gateway, so the token/userinfo exchange must be allowlisted
+      # by hostname (matched before the private-range check in checkForSsrfWithIp).
+      - name: "OVERWRITE_SETTING_SSRF_Allowlist"
+        value: "auth.${SECRET_DOMAIN}"
+      - name: "OVERWRITE_SETTING_Accounts_OAuth_Custom-Keycloak"
+        value: "true"
+      - name: "OVERWRITE_SETTING_Accounts_OAuth_Custom-Keycloak-url"
+        value: "https://auth.${SECRET_DOMAIN}/realms/surdeule/protocol/openid-connect"
+      - name: "OVERWRITE_SETTING_Accounts_OAuth_Custom-Keycloak-token_path"
+        value: "/token"
+      - name: "OVERWRITE_SETTING_Accounts_OAuth_Custom-Keycloak-token_sent_via"
+        value: "header"
+      - name: "OVERWRITE_SETTING_Accounts_OAuth_Custom-Keycloak-identity_token_sent_via"
+        value: "default"
+      - name: "OVERWRITE_SETTING_Accounts_OAuth_Custom-Keycloak-identity_path"
+        value: "/userinfo"
+      - name: "OVERWRITE_SETTING_Accounts_OAuth_Custom-Keycloak-authorize_path"
+        value: "/auth"
+      - name: "OVERWRITE_SETTING_Accounts_OAuth_Custom-Keycloak-scope"
+        value: "openid email profile"
+      - name: "OVERWRITE_SETTING_Accounts_OAuth_Custom-Keycloak-access_token_param"
+        value: "access_token"
+      - name: "OVERWRITE_SETTING_Accounts_OAuth_Custom-Keycloak-id"
+        value: "rocketchat"
+      - name: "OVERWRITE_SETTING_Accounts_OAuth_Custom-Keycloak-secret"
+        valueFrom:
+          secretKeyRef:
+            name: rocketchat-oidc
+            key: OIDC_CLIENT_SECRET
+      - name: "OVERWRITE_SETTING_Accounts_OAuth_Custom-Keycloak-login_style"
+        value: "redirect"
+      - name: "OVERWRITE_SETTING_Accounts_OAuth_Custom-Keycloak-button_label_text"
+        value: "Superquinquin"
+      - name: "OVERWRITE_SETTING_Accounts_OAuth_Custom-Keycloak-button_color"
+        value: "#1465B7"
+      - name: "OVERWRITE_SETTING_Accounts_OAuth_Custom-Keycloak-button_label_color"
+        value: "#FFFFFF"
+      - name: "OVERWRITE_SETTING_Accounts_OAuth_Custom-Keycloak-username_field"
+        value: "preferred_username"
+      - name: "OVERWRITE_SETTING_Accounts_OAuth_Custom-Keycloak-email_field"
+        value: "email"
+      - name: "OVERWRITE_SETTING_Accounts_OAuth_Custom-Keycloak-name_field"
+        value: "name"
+      - name: "OVERWRITE_SETTING_Accounts_OAuth_Custom-Keycloak-merge_users"
+        value: "true"
+      - name: "OVERWRITE_SETTING_Accounts_OAuth_Custom-Keycloak-show_button"
+        value: "true"
     microservices:
       enabled: false
     service:

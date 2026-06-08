@@ -4,5 +4,6 @@ kind: Kustomization
 resources:
   - ./helmrepository.yaml
   - ./externalsecret.yaml
+  - ./keycloakclient.yaml
   - ./helmrelease.yaml
   - ./httproute.yaml

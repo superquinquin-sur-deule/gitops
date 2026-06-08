@@ -1,0 +1,18 @@
+---
+apiVersion: v1.edp.epam.com/v1
+kind: KeycloakClient
+metadata:
+  name: rocketchat
+spec:
+  realmRef:
+    name: surdeule
+    kind: ClusterKeycloakRealm
+  clientId: rocketchat
+  public: false
+  directAccess: false
+  secret: $$rocketchat-oidc:OIDC_CLIENT_SECRET
+  webUrl: https://lechat.${SECRET_DOMAIN}
+  redirectUris:
+    - https://lechat.${SECRET_DOMAIN}/_oauth/keycloak
+  webOrigins:
+    - https://lechat.${SECRET_DOMAIN}
