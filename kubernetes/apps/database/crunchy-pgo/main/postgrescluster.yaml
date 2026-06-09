@@ -25,6 +25,12 @@ spec:
     - name: outline
       databases:
         - outline
+    - name: dlc
+      databases:
+        - dlc
+    - name: dlcstaging
+      databases:
+        - dlcstaging
 
   service:
     type: LoadBalancer

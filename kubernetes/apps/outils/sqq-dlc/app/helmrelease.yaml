@@ -1,0 +1,89 @@
+---
+# yaml-language-server: $schema=https://raw.githubusercontent.com/bjw-s-labs/helm-charts/main/charts/other/app-template/schemas/helmrelease-helm-v2.schema.json
+apiVersion: helm.toolkit.fluxcd.io/v2
+kind: HelmRelease
+metadata:
+  name: &app sqq-dlc
+spec:
+  interval: 1h
+  chartRef:
+    kind: OCIRepository
+    name: *app
+  values:
+    controllers:
+      main:
+        replicas: 1
+        strategy: RollingUpdate
+        annotations:
+          reloader.stakater.com/auto: "true"
+        containers:
+          main:
+            image:
+              repository: ghcr.io/superquinquin-sur-deule/sqq-dlc
+              tag: latest@sha256:21fc656b7f1d902fa6c76348cb7bac290ca05e43c0d9a9f1aa40e857192d843f
+
+            env:
+              ODOO_REBUT_DRY_RUN: "false"
+
+            envFrom:
+              - secretRef:
+                  name: sqq-dlc-secret
+
+            probes:
+              liveness: &probe
+                enabled: true
+                custom: true
+                spec:
+                  tcpSocket:
+                    port: 8080
+                  initialDelaySeconds: 30
+                  periodSeconds: 15
+                  failureThreshold: 5
+              readiness: *probe
+              startup:
+                enabled: true
+                custom: true
+                spec:
+                  tcpSocket:
+                    port: 8080
+                  periodSeconds: 10
+                  failureThreshold: 30
+
+            resources:
+              requests:
+                cpu: 100m
+                memory: 512Mi
+              limits:
+                memory: 1Gi
+
+    defaultPodOptions:
+      securityContext:
+        runAsNonRoot: true
+        runAsUser: 185
+        runAsGroup: 185
+
+    service:
+      app:
+        controller: main
+        ports:
+          http:
+            port: &port 8080
+
+    route:
+      app:
+        annotations:
+          gethomepage.dev/enabled: "true"
+          gethomepage.dev/name: Relevé DLC
+          gethomepage.dev/group: Superquinquin
+          gethomepage.dev/icon: mdi-calendar-clock
+          gethomepage.dev/description: Relevé des DLC produits frais
+          gethomepage.dev/external: "true"
+        hostnames:
+          - "dlc.${SECRET_DOMAIN}"
+        parentRefs:
+          - name: envoy-internal
+            namespace: network
+        rules:
+          - backendRefs:
+              - identifier: app
+                port: *port
