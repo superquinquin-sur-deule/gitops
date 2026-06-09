@@ -20,7 +20,7 @@ spec:
           main:
             image:
               repository: ghcr.io/superquinquin-sur-deule/sqq-dlc
-              tag: latest@sha256:b685f7c99a21288425298acaebed661f03523f24e22a330eac83f079bc24bddc
+              tag: latest@sha256:e9e365765625c6e0887094b3742f1a2777b4dba6b9db3fd576d1d64608c868fa
 
             env:
               ODOO_REBUT_DRY_RUN: "false"
