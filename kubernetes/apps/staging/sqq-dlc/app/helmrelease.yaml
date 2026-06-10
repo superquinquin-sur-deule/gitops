@@ -19,7 +19,7 @@ spec:
         containers:
           main:
             image:
-              repository: ghcr.io/superquinquin-sur-deule/sqq-dlc
+              repository: ghcr.io/superquinquin-sur-deule/sqq-rebut
               tag: latest@sha256:794a73cd76868c528fce321242f355be2656b34ee71fd710c5f8c330dcf2d8ae
 
             env:

@@ -24,6 +24,7 @@ spec:
 
             env:
               ODOO_REBUT_DRY_RUN: "false"
+              APP_STAGING: "false"
 
             envFrom:
               - secretRef:
