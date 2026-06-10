@@ -33,7 +33,7 @@ spec:
                   export TZ=Europe/Paris
                   # renovate: datasource=github-releases depName=superquinquin-sur-deule/odoo-cli
                   version="0.13.0"
-                  url="https://github.com/superquinquin-sur-deule/odoo-cli/releases/download/v$version/odoo-cli-$version-linux-x86_64"
+                  url="https://github.com/superquinquin-sur-deule/odoo-cli/releases/download/v$${version}/odoo-cli-$${version}-linux-x86_64"
                   curl -fsSL -o /usr/local/bin/odoo-cli "$url"
                   chmod +x /usr/local/bin/odoo-cli
                   echo "Running cooperators reset-ftop-counter"
