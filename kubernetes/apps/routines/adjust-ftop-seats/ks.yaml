@@ -2,9 +2,12 @@
 apiVersion: kustomize.toolkit.fluxcd.io/v1
 kind: Kustomization
 metadata:
-  name: adjust-ftop-seats
+  name: &app adjust-ftop-seats
 spec:
   interval: 1h
+  commonMetadata:
+    labels:
+      app.kubernetes.io/name: *app
   path: ./kubernetes/apps/routines/adjust-ftop-seats/app
   postBuild:
     substituteFrom:

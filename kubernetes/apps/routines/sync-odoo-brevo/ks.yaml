@@ -2,10 +2,13 @@
 apiVersion: kustomize.toolkit.fluxcd.io/v1
 kind: Kustomization
 metadata:
-  name: sync-odoo-brevo
+  name: &app sync-odoo-brevo
 spec:
   interval: 1h
   path: ./kubernetes/apps/routines/sync-odoo-brevo/app
+  commonMetadata:
+    labels:
+      app.kubernetes.io/name: *app
   postBuild:
     substituteFrom:
       - name: cluster-secrets
