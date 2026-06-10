@@ -19,8 +19,8 @@ spec:
         containers:
           main:
             image:
-              repository: ghcr.io/superquinquin-sur-deule/sqq-dlc
-              tag: 0.3.0@sha256:4fe9c09137aad384fd380cc9c2fb29f11f98bf86fd1ff21b9ed6f681b118b404
+              repository: ghcr.io/superquinquin-sur-deule/sqq-rebut
+              tag: 0.7.0
 
             env:
               ODOO_REBUT_DRY_RUN: "false"
@@ -73,13 +73,13 @@ spec:
       app:
         annotations:
           gethomepage.dev/enabled: "true"
-          gethomepage.dev/name: Relevé DLC
+          gethomepage.dev/name: Rebut
           gethomepage.dev/group: Superquinquin
           gethomepage.dev/icon: mdi-calendar-clock
-          gethomepage.dev/description: Relevé des DLC produits frais
+          gethomepage.dev/description: Relevé des DLC & Pertes
           gethomepage.dev/external: "true"
         hostnames:
-          - "dlc.${SECRET_DOMAIN}"
+          - "rebut.${SECRET_DOMAIN}"
         parentRefs:
           - name: envoy-internal
             namespace: network

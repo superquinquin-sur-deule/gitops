@@ -20,7 +20,7 @@ spec:
           main:
             image:
               repository: ghcr.io/superquinquin-sur-deule/sqq-dlc
-              tag: latest@sha256:e9e365765625c6e0887094b3742f1a2777b4dba6b9db3fd576d1d64608c868fa
+              tag: latest@sha256:794a73cd76868c528fce321242f355be2656b34ee71fd710c5f8c330dcf2d8ae
 
             env:
               ODOO_REBUT_DRY_RUN: "false"
@@ -73,13 +73,13 @@ spec:
       app:
         annotations:
           gethomepage.dev/enabled: "true"
-          gethomepage.dev/name: Relevé DLC (staging)
-          gethomepage.dev/group: Superquinquin
+          gethomepage.dev/name: Rebut (staging)
+          gethomepage.dev/group: Staging
           gethomepage.dev/icon: mdi-calendar-clock
-          gethomepage.dev/description: Relevé des DLC produits frais — staging
+          gethomepage.dev/description: Relevé des DLC & Pertes — staging
           gethomepage.dev/external: "true"
         hostnames:
-          - "dlc-staging.${SECRET_DOMAIN}"
+          - "rebut-staging.${SECRET_DOMAIN}"
         parentRefs:
           - name: envoy-internal
             namespace: network
