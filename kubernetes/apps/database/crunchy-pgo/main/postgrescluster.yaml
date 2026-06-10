@@ -9,6 +9,9 @@ metadata:
   annotations:
     crunchy-users.henrywhitaker3.github.com/superuser: "postgres"
 spec:
+  metadata:
+    labels:
+      app.kubernetes.io/name: pg-main
   postgresVersion: 16
   image: registry.developers.crunchydata.com/crunchydata/crunchy-postgres:ubi9-16.13-2610
 

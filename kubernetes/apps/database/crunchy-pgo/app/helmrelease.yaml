@@ -10,6 +10,8 @@ spec:
     name: crunchy-pgo
   values:
     singleNamespace: false
+    customPodLabels:
+      app.kubernetes.io/name: pgo
     controllerImages:
       cluster: registry.developers.crunchydata.com/crunchydata/postgres-operator:ubi9-6.0.1-0
     resources:

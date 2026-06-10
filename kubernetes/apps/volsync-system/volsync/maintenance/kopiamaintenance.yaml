@@ -6,6 +6,8 @@ metadata:
   name: daily
 spec:
   enabled: true
+  moverPodLabels:
+    app.kubernetes.io/name: kopia-maintenance
   trigger:
     schedule: 30 3,15 * * *
   moverVolumes:
