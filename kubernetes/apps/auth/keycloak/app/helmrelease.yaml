@@ -20,7 +20,7 @@ spec:
           main:
             image:
               repository: ghcr.io/superquinquin-sur-deule/sqq-keycloak
-              tag: main
+              tag: main@sha256:c331168473e9224a670f171fa75d858a89c225adefb539cec13138d04ad934b3
             # Non-optimized start: the image was built (`kc.sh build`) without KC_DB,
             # so it re-augments at startup with KC_DB=postgres. Switch to
             # ["start", "--optimized"] once the image bakes KC_DB=postgres at build time.
