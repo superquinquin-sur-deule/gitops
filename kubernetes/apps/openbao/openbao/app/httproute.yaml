@@ -6,7 +6,7 @@ metadata:
   annotations:
     gethomepage.dev/enabled: "true"
     gethomepage.dev/name: OpenBao
-    gethomepage.dev/group: Infrastructure
+    gethomepage.dev/group: Informatique
     gethomepage.dev/icon: openbao.png
     gethomepage.dev/description: Gestion des secrets
     gethomepage.dev/external: "true"

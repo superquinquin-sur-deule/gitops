@@ -69,7 +69,7 @@ spec:
         annotations:
           gethomepage.dev/enabled: "true"
           gethomepage.dev/name: Kopia
-          gethomepage.dev/group: Infrastructure
+          gethomepage.dev/group: Informatique
           gethomepage.dev/icon: kopia.png
           gethomepage.dev/description: Sauvegardes
           gethomepage.dev/external: "true"

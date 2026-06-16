@@ -6,7 +6,7 @@ metadata:
   annotations:
     gethomepage.dev/enabled: "true"
     gethomepage.dev/name: Grafana
-    gethomepage.dev/group: Infrastructure
+    gethomepage.dev/group: Informatique
     gethomepage.dev/icon: grafana.png
     gethomepage.dev/description: Dashboards & métriques
     gethomepage.dev/external: "true"

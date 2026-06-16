@@ -56,6 +56,7 @@ spec:
       app:
         annotations:
           gethomepage.dev/enabled: "true"
+          gethomepage.dev/href: "https://scannettes.${SECRET_DOMAIN}/admin/lobby"
           gethomepage.dev/name: Scannettes
           gethomepage.dev/group: Magasin
           gethomepage.dev/icon: mdi-barcode-scan
