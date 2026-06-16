@@ -74,6 +74,7 @@ spec:
       app:
         annotations:
           gethomepage.dev/enabled: "true"
+          gethomepage.dev/href: "https://rebut.${SECRET_DOMAIN}/releves"
           gethomepage.dev/name: Rebut
           gethomepage.dev/group: Magasin
           gethomepage.dev/icon: mdi-calendar-clock
