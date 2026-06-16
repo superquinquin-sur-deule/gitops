@@ -68,7 +68,7 @@ spec:
         annotations:
           gethomepage.dev/enabled: "true"
           gethomepage.dev/name: Accueil
-          gethomepage.dev/group: Superquinquin
+          gethomepage.dev/group: Magasin
           gethomepage.dev/icon: mdi-home-heart
           gethomepage.dev/description: Page d'accueil
           gethomepage.dev/external: "true"

@@ -75,7 +75,7 @@ spec:
         annotations:
           gethomepage.dev/enabled: "true"
           gethomepage.dev/name: Rebut
-          gethomepage.dev/group: Superquinquin
+          gethomepage.dev/group: Magasin
           gethomepage.dev/icon: mdi-calendar-clock
           gethomepage.dev/description: Relevé des DLC & Pertes
           gethomepage.dev/external: "true"

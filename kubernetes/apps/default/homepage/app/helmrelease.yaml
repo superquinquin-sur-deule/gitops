@@ -49,11 +49,13 @@ spec:
       bookmarks: []
 
       services:
-        - Superquinquin:
+        - Salariées:
+            - Odoo:
+                href: https://gestion-sdl.${SQQ_DOMAIN}
+                description: ERP
             - Métabase:
                 href: https://metabase-deule.${SQQ_DOMAIN}
-                description: Business intelligence
-
+                description: Statistiques
       widgets:
         - greeting:
             text_size: xl

@@ -57,7 +57,7 @@ spec:
         annotations:
           gethomepage.dev/enabled: "true"
           gethomepage.dev/name: Scannettes
-          gethomepage.dev/group: Superquinquin
+          gethomepage.dev/group: Magasin
           gethomepage.dev/icon: mdi-barcode-scan
           gethomepage.dev/description: Inventaire & réception
           gethomepage.dev/external: "true"
