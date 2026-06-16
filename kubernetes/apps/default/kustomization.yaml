@@ -16,3 +16,4 @@ resources:
   - ./outline/ks.yaml
   - ./homepage/ks.yaml
   - ./immich/ks.yaml
+  - ./immich-drop/ks.yaml
