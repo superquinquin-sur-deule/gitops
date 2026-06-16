@@ -1,0 +1,9 @@
+---
+apiVersion: observability.giantswarm.io/v1alpha2
+kind: Silence
+metadata:
+  name: alertmanager-cluster-failed-to-send-alerts
+spec:
+  matchers:
+    - name: alertname
+      value: AlertmanagerClusterFailedToSendAlerts

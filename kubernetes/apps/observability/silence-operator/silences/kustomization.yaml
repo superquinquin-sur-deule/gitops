@@ -5,3 +5,4 @@ resources:
   - ./kube-memory-overcommit.yaml
   - ./blackbox-probe-failed.yaml
   - ./blackbox-probe-slow.yaml
+  - ./alertmanager-cluster-failed-to-send-alerts.yaml
