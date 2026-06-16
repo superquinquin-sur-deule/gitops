@@ -14,6 +14,12 @@ spec:
       - severity
     groupInterval: 5m
     groupWait: 1m
+    routes:
+      - receiver: rocketchat
+        matchers:
+          - name: severity
+            value: critical
+            matchType: =
   inhibitRules:
     - equal:
         - alertname
@@ -28,3 +34,18 @@ spec:
           matchType: =
   receivers:
     - name: blackhole
+    - name: rocketchat
+      slackConfigs:
+        - apiURL:
+            name: alertmanager-rocketchat
+            key: webhook-url
+          sendResolved: true
+          title: >-
+            [{{ .Status | toUpper }}{{ if eq .Status "firing" }} {{ .Alerts.Firing | len }}{{ end }}]
+            {{ .CommonLabels.alertname }}
+          text: >-
+            {{ range .Alerts }}*{{ .Annotations.summary }}*
+
+            {{ if .Labels.namespace }}Namespace: `{{ .Labels.namespace }}` · {{ end }}Sévérité: `{{ .Labels.severity }}`
+
+            {{ end }}
