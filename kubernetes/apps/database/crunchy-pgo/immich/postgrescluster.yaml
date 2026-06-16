@@ -1,0 +1,75 @@
+---
+# yaml-language-server: $schema=https://raw.githubusercontent.com/datreeio/CRDs-catalog/main/postgres-operator.crunchydata.com/postgrescluster_v1beta1.json
+apiVersion: postgres-operator.crunchydata.com/v1beta1
+kind: PostgresCluster
+metadata:
+  name: pg-immich
+  labels:
+    crunchy-users.henrywhitaker3.github.com/watch: "true"
+  annotations:
+    crunchy-users.henrywhitaker3.github.com/superuser: "postgres"
+spec:
+  metadata:
+    labels:
+      app.kubernetes.io/name: pg-immich
+  postgresVersion: 18
+  image: registry.developers.crunchydata.com/crunchydata/crunchy-postgres:ubi9-18.4-2621
+
+  users:
+    - name: "postgres"
+      databases:
+        - "postgres"
+      options: "SUPERUSER"
+      password:
+        type: AlphaNumeric
+    - name: immich
+      databases:
+        - immich
+      options: "SUPERUSER"
+      password:
+        type: AlphaNumeric
+
+  patroni:
+    dynamicConfiguration:
+      postgresql:
+        parameters:
+          max_connections: 200
+        pg_hba:
+          - hostnossl all all 10.42.0.0/16 md5
+          - hostssl all all all md5
+
+  instances:
+    - name: main
+      replicas: 1
+      dataVolumeClaimSpec:
+        accessModes:
+          - "ReadWriteOnce"
+        storageClassName: openebs-hostpath
+        resources:
+          requests:
+            storage: 20Gi
+
+  backups:
+    pgbackrest:
+      image: registry.developers.crunchydata.com/crunchydata/crunchy-pgbackrest:ubi9-2.58.0-2621
+      global:
+        compress-type: "bz2"
+        compress-level: "9"
+        repo1-retention-full: "14" # days
+        repo1-retention-full-type: "time"
+      repos:
+        - name: repo1
+          schedules:
+            full: "30 1 * * 0" # Sunday at 01:30
+            incremental: "30 2-23 * * *" # Every hour except 01:30
+          volume:
+            volumeClaimSpec:
+              storageClassName: ""
+              accessModes:
+                - ReadWriteMany
+              resources:
+                requests:
+                  storage: 50Gi
+              selector:
+                matchLabels:
+                  app.kubernetes.io/component: pg-immich-pgbackrest-repo

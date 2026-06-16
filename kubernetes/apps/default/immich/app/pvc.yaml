@@ -1,0 +1,35 @@
+---
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: immich-library-nfs
+spec:
+  capacity:
+    storage: 1Ti # nominal; NFS does not enforce capacity
+  accessModes:
+    - ReadWriteMany
+  persistentVolumeReclaimPolicy: Retain
+  storageClassName: ""
+  mountOptions:
+    - nfsvers=4.1
+    - hard
+  nfs:
+    server: 192.168.7.50
+    path: /volume1/apps/immich
+  claimRef:
+    namespace: default
+    name: immich-library
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: immich-library
+  namespace: default
+spec:
+  accessModes:
+    - ReadWriteMany
+  storageClassName: ""
+  volumeName: immich-library-nfs
+  resources:
+    requests:
+      storage: 1Ti

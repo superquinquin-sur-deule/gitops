@@ -15,3 +15,4 @@ resources:
   - ./rocketchat/ks.yaml
   - ./outline/ks.yaml
   - ./homepage/ks.yaml
+  - ./immich/ks.yaml

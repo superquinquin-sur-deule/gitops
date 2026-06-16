@@ -1,0 +1,38 @@
+---
+apiVersion: helm.toolkit.fluxcd.io/v2
+kind: HelmRelease
+metadata:
+  name: immich
+spec:
+  interval: 1h
+  chartRef:
+    kind: OCIRepository
+    name: immich
+  values:
+    immich:
+      persistence:
+        library:
+          existingClaim: immich-library
+      configurationKind: Secret
+      existingConfiguration: immich-config
+      metrics:
+        enabled: false
+    machine-learning:
+      enabled: false
+    valkey:
+      enabled: true
+    server:
+      enabled: true
+      controllers:
+        main:
+          annotations:
+            reloader.stakater.com/auto: "true"
+          containers:
+            main:
+              image:
+                tag: v2.6.3
+              env:
+                DB_VECTOR_EXTENSION: pgvector
+              envFrom:
+                - secretRef:
+                    name: immich-secret
