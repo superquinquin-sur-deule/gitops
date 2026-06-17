@@ -16,3 +16,14 @@ spec:
     - https://lechat.${SECRET_DOMAIN}/_oauth/keycloak
   webOrigins:
     - https://lechat.${SECRET_DOMAIN}
+  protocolMappers:
+    - name: prenomnom
+      protocol: openid-connect
+      protocolMapper: oidc-usermodel-attribute-mapper
+      config:
+        user.attribute: prenomnom
+        claim.name: prenomnom
+        jsonType.label: String
+        access.token.claim: "true"
+        id.token.claim: "true"
+        userinfo.token.claim: "true"

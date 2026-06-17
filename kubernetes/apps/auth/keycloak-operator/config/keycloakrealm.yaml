@@ -9,3 +9,16 @@ spec:
   frontendUrl: "https://auth.${SECRET_DOMAIN}"
   themes:
     loginTheme: surdeule
+  # Show the "Remember me" checkbox so the SSO cookies persist across browser
+  # restarts; without it Keycloak's identity cookie is a per-browser-session
+  # cookie and users would be prompted again on the next browser launch.
+  login:
+    rememberMe: true
+  # Keep members signed in for up to ~30 days so they re-authenticate at most
+  # once a month. Values are in seconds (30 * 24 * 3600 = 2592000).
+  sessions:
+    ssoSessionSettings:
+      idleTimeout: 2592000 # logged out after 30 days of inactivity
+      maxLifespan: 2592000 # hard cap: 30 days, then re-auth
+      idleTimeoutRememberMe: 2592000 # same, for "remember me" sessions
+      maxLifespanRememberMe: 2592000 # same, for "remember me" sessions
