@@ -9,13 +9,15 @@ spec:
   version: "8.0.0"
   security:
     authentication:
-      modes: ["SCRAM"]
+      modes:
+        - "SCRAM"
   users:
     - name: admin
       db: admin
       passwordSecretRef:
         name: mongodb-admin-password
       scramCredentialsSecretName: admin-scram
+      connectionStringSecretName: mongodb-admin-connection
       roles:
         - name: root
           db: admin
@@ -34,7 +36,8 @@ spec:
         - metadata:
             name: data-volume
           spec:
-            accessModes: ["ReadWriteOnce"]
+            accessModes:
+              - "ReadWriteOnce"
             storageClassName: ceph-block
             resources:
               requests:
@@ -42,7 +45,8 @@ spec:
         - metadata:
             name: logs-volume
           spec:
-            accessModes: ["ReadWriteOnce"]
+            accessModes:
+              - "ReadWriteOnce"
             storageClassName: ceph-block
             resources:
               requests:

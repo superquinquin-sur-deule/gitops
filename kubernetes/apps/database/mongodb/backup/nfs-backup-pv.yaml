@@ -1,0 +1,23 @@
+---
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: mongodb-backup-nfs
+  labels:
+    app.kubernetes.io/component: mongodb-backup-repo
+spec:
+  capacity:
+    storage: 50Gi
+  accessModes:
+    - ReadWriteMany
+  persistentVolumeReclaimPolicy: Retain
+  storageClassName: ""
+  mountOptions:
+    - nfsvers=4.1
+    - hard
+  claimRef:
+    namespace: database
+    name: mongodb-backup
+  nfs:
+    server: 192.168.7.50
+    path: /volume1/backup/mongodb
