@@ -40,7 +40,7 @@ spec:
                   curl -fsSL -o /usr/local/bin/odoo-cli "$url"
                   chmod +x /usr/local/bin/odoo-cli
                   begin="$(date +%d/%m/%Y)"
-                  end="$(date -d '+7 days' +%d/%m/%Y)"
+                  end="$(date -d '+28 days' +%d/%m/%Y)"
                   echo "Running adjust-ftop-seats from $begin to $end (include-draft)"
                   exec odoo-cli creneaux adjust-ftop-seats \
                     --begin-date "$begin" \
