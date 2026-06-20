@@ -1,0 +1,281 @@
+---
+# yaml-language-server: $schema=https://kubernetes-schemas.pages.dev/grafana.integreatly.org/grafanadashboard_v1beta1.json
+apiVersion: grafana.integreatly.org/v1beta1
+kind: GrafanaDashboard
+metadata:
+  name: sondes-temperatures
+spec:
+  allowCrossNamespaceImport: true
+  instanceSelector:
+    matchLabels:
+      dashboards: grafana
+  datasources:
+    - datasourceName: prometheus
+      inputName: DS_PROMETHEUS
+  json: |
+    {
+      "uid": "sondes-temperatures",
+      "title": "Sondes — Frigos & Congélateurs",
+      "tags": ["sondes", "zigbee", "temperature"],
+      "timezone": "browser",
+      "editable": true,
+      "schemaVersion": 39,
+      "version": 1,
+      "refresh": "1m",
+      "time": { "from": "now-24h", "to": "now" },
+      "templating": {
+        "list": [
+          {
+            "name": "sensor",
+            "label": "Sonde",
+            "type": "query",
+            "datasource": { "type": "prometheus", "uid": "$${DS_PROMETHEUS}" },
+            "query": "label_values(temperature, sensor)",
+            "definition": "label_values(temperature, sensor)",
+            "includeAll": true,
+            "multi": true,
+            "allValue": ".*",
+            "current": { "text": "All", "value": "$$__all" },
+            "refresh": 2,
+            "sort": 1
+          }
+        ]
+      },
+      "panels": [
+        {
+          "id": 1,
+          "type": "row",
+          "title": "Vue d'ensemble",
+          "gridPos": { "h": 1, "w": 24, "x": 0, "y": 0 }
+        },
+        {
+          "id": 2,
+          "type": "stat",
+          "title": "Température actuelle",
+          "datasource": { "type": "prometheus", "uid": "$${DS_PROMETHEUS}" },
+          "gridPos": { "h": 6, "w": 24, "x": 0, "y": 1 },
+          "fieldConfig": {
+            "defaults": {
+              "unit": "celsius",
+              "color": { "mode": "thresholds" },
+              "thresholds": {
+                "mode": "absolute",
+                "steps": [
+                  { "color": "blue", "value": null },
+                  { "color": "green", "value": -25 },
+                  { "color": "yellow", "value": 8 },
+                  { "color": "red", "value": 12 }
+                ]
+              }
+            },
+            "overrides": []
+          },
+          "options": {
+            "reduceOptions": { "calcs": ["lastNotNull"], "fields": "", "values": false },
+            "orientation": "auto",
+            "textMode": "value_and_name",
+            "colorMode": "value",
+            "graphMode": "area",
+            "justifyMode": "auto"
+          },
+          "targets": [
+            {
+              "datasource": { "type": "prometheus", "uid": "$${DS_PROMETHEUS}" },
+              "expr": "temperature{sensor=~\"$$sensor\"}",
+              "legendFormat": "{{sensor}}",
+              "refId": "A"
+            }
+          ]
+        },
+        {
+          "id": 10,
+          "type": "row",
+          "title": "Congélateurs",
+          "gridPos": { "h": 1, "w": 24, "x": 0, "y": 7 }
+        },
+        {
+          "id": 11,
+          "type": "timeseries",
+          "title": "Température — congélateurs",
+          "datasource": { "type": "prometheus", "uid": "$${DS_PROMETHEUS}" },
+          "gridPos": { "h": 8, "w": 8, "x": 0, "y": 8 },
+          "fieldConfig": {
+            "defaults": {
+              "unit": "celsius",
+              "custom": { "drawStyle": "line", "lineInterpolation": "smooth", "fillOpacity": 10, "showPoints": "auto", "spanNulls": true }
+            },
+            "overrides": []
+          },
+          "options": {
+            "legend": { "displayMode": "table", "placement": "bottom", "calcs": ["lastNotNull", "min", "max"] },
+            "tooltip": { "mode": "multi", "sort": "desc" }
+          },
+          "targets": [
+            {
+              "datasource": { "type": "prometheus", "uid": "$${DS_PROMETHEUS}" },
+              "expr": "temperature{sensor=~\"temp_congelateur.*\", sensor=~\"$$sensor\"}",
+              "legendFormat": "{{sensor}}",
+              "refId": "A"
+            }
+          ]
+        },
+        {
+          "id": 12,
+          "type": "timeseries",
+          "title": "Humidité — congélateurs",
+          "datasource": { "type": "prometheus", "uid": "$${DS_PROMETHEUS}" },
+          "gridPos": { "h": 8, "w": 8, "x": 8, "y": 8 },
+          "fieldConfig": {
+            "defaults": {
+              "unit": "humidity",
+              "custom": { "drawStyle": "line", "lineInterpolation": "smooth", "fillOpacity": 10, "showPoints": "auto", "spanNulls": true }
+            },
+            "overrides": []
+          },
+          "options": {
+            "legend": { "displayMode": "table", "placement": "bottom", "calcs": ["lastNotNull", "min", "max"] },
+            "tooltip": { "mode": "multi", "sort": "desc" }
+          },
+          "targets": [
+            {
+              "datasource": { "type": "prometheus", "uid": "$${DS_PROMETHEUS}" },
+              "expr": "humidity{sensor=~\"temp_congelateur.*\", sensor=~\"$$sensor\"}",
+              "legendFormat": "{{sensor}}",
+              "refId": "A"
+            }
+          ]
+        },
+        {
+          "id": 13,
+          "type": "timeseries",
+          "title": "Batterie — congélateurs",
+          "datasource": { "type": "prometheus", "uid": "$${DS_PROMETHEUS}" },
+          "gridPos": { "h": 8, "w": 8, "x": 16, "y": 8 },
+          "fieldConfig": {
+            "defaults": {
+              "unit": "percent",
+              "min": 0,
+              "max": 100,
+              "color": { "mode": "thresholds" },
+              "thresholds": {
+                "mode": "absolute",
+                "steps": [
+                  { "color": "red", "value": null },
+                  { "color": "yellow", "value": 20 },
+                  { "color": "green", "value": 50 }
+                ]
+              },
+              "custom": { "drawStyle": "line", "lineInterpolation": "stepAfter", "fillOpacity": 5, "showPoints": "auto", "spanNulls": true }
+            },
+            "overrides": []
+          },
+          "options": {
+            "legend": { "displayMode": "table", "placement": "bottom", "calcs": ["lastNotNull", "min"] },
+            "tooltip": { "mode": "multi", "sort": "desc" }
+          },
+          "targets": [
+            {
+              "datasource": { "type": "prometheus", "uid": "$${DS_PROMETHEUS}" },
+              "expr": "battery{sensor=~\"temp_congelateur.*\", sensor=~\"$$sensor\"}",
+              "legendFormat": "{{sensor}}",
+              "refId": "A"
+            }
+          ]
+        },
+        {
+          "id": 20,
+          "type": "row",
+          "title": "Frigos",
+          "gridPos": { "h": 1, "w": 24, "x": 0, "y": 16 }
+        },
+        {
+          "id": 21,
+          "type": "timeseries",
+          "title": "Température — frigos",
+          "datasource": { "type": "prometheus", "uid": "$${DS_PROMETHEUS}" },
+          "gridPos": { "h": 8, "w": 8, "x": 0, "y": 17 },
+          "fieldConfig": {
+            "defaults": {
+              "unit": "celsius",
+              "custom": { "drawStyle": "line", "lineInterpolation": "smooth", "fillOpacity": 10, "showPoints": "auto", "spanNulls": true }
+            },
+            "overrides": []
+          },
+          "options": {
+            "legend": { "displayMode": "table", "placement": "bottom", "calcs": ["lastNotNull", "min", "max"] },
+            "tooltip": { "mode": "multi", "sort": "desc" }
+          },
+          "targets": [
+            {
+              "datasource": { "type": "prometheus", "uid": "$${DS_PROMETHEUS}" },
+              "expr": "temperature{sensor=~\"temp_frigo.*\", sensor=~\"$$sensor\"}",
+              "legendFormat": "{{sensor}}",
+              "refId": "A"
+            }
+          ]
+        },
+        {
+          "id": 22,
+          "type": "timeseries",
+          "title": "Humidité — frigos",
+          "datasource": { "type": "prometheus", "uid": "$${DS_PROMETHEUS}" },
+          "gridPos": { "h": 8, "w": 8, "x": 8, "y": 17 },
+          "fieldConfig": {
+            "defaults": {
+              "unit": "humidity",
+              "custom": { "drawStyle": "line", "lineInterpolation": "smooth", "fillOpacity": 10, "showPoints": "auto", "spanNulls": true }
+            },
+            "overrides": []
+          },
+          "options": {
+            "legend": { "displayMode": "table", "placement": "bottom", "calcs": ["lastNotNull", "min", "max"] },
+            "tooltip": { "mode": "multi", "sort": "desc" }
+          },
+          "targets": [
+            {
+              "datasource": { "type": "prometheus", "uid": "$${DS_PROMETHEUS}" },
+              "expr": "humidity{sensor=~\"temp_frigo.*\", sensor=~\"$$sensor\"}",
+              "legendFormat": "{{sensor}}",
+              "refId": "A"
+            }
+          ]
+        },
+        {
+          "id": 23,
+          "type": "timeseries",
+          "title": "Batterie — frigos",
+          "datasource": { "type": "prometheus", "uid": "$${DS_PROMETHEUS}" },
+          "gridPos": { "h": 8, "w": 8, "x": 16, "y": 17 },
+          "fieldConfig": {
+            "defaults": {
+              "unit": "percent",
+              "min": 0,
+              "max": 100,
+              "color": { "mode": "thresholds" },
+              "thresholds": {
+                "mode": "absolute",
+                "steps": [
+                  { "color": "red", "value": null },
+                  { "color": "yellow", "value": 20 },
+                  { "color": "green", "value": 50 }
+                ]
+              },
+              "custom": { "drawStyle": "line", "lineInterpolation": "stepAfter", "fillOpacity": 5, "showPoints": "auto", "spanNulls": true }
+            },
+            "overrides": []
+          },
+          "options": {
+            "legend": { "displayMode": "table", "placement": "bottom", "calcs": ["lastNotNull", "min"] },
+            "tooltip": { "mode": "multi", "sort": "desc" }
+          },
+          "targets": [
+            {
+              "datasource": { "type": "prometheus", "uid": "$${DS_PROMETHEUS}" },
+              "expr": "battery{sensor=~\"temp_frigo.*\", sensor=~\"$$sensor\"}",
+              "legendFormat": "{{sensor}}",
+              "refId": "A"
+            }
+          ]
+        }
+      ]
+    }
