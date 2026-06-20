@@ -20,6 +20,8 @@ spec:
             image:
               repository: ghcr.io/hikhvar/mqtt2prometheus
               tag: v0.1.6
+            command:
+              - /mqtt2prometheus
             args:
               - -config
               - /config.yaml
