@@ -481,8 +481,43 @@ url = "https://github.com/evilmartians/lefthook/releases/download/v2.1.9/lefthoo
 provenance = "github-attestations"
 
 [[tools.openbao]]
-version = "2.5.4"
+version = "2.5.5"
 backend = "github:openbao/openbao"
+
+[tools.openbao."platforms.linux-arm64"]
+checksum = "sha256:9b133729e503ecf4d52f1d4e062954b9fd3798f14335ad8af5f7435f5b8ebd16"
+url = "https://github.com/openbao/openbao/releases/download/v2.5.5/bao_2.5.5_Linux_arm64.tar.gz"
+url_api = "https://api.github.com/repos/openbao/openbao/releases/assets/450180827"
+
+[tools.openbao."platforms.linux-arm64-musl"]
+checksum = "sha256:9b133729e503ecf4d52f1d4e062954b9fd3798f14335ad8af5f7435f5b8ebd16"
+url = "https://github.com/openbao/openbao/releases/download/v2.5.5/bao_2.5.5_Linux_arm64.tar.gz"
+url_api = "https://api.github.com/repos/openbao/openbao/releases/assets/450180827"
+
+[tools.openbao."platforms.linux-x64"]
+checksum = "sha256:2c5577707e97fc95c2086950f39880ead5e45b356c94388e5cb606f5a5c2b697"
+url = "https://github.com/openbao/openbao/releases/download/v2.5.5/bao_2.5.5_Linux_x86_64.tar.gz"
+url_api = "https://api.github.com/repos/openbao/openbao/releases/assets/450180803"
+
+[tools.openbao."platforms.linux-x64-musl"]
+checksum = "sha256:2c5577707e97fc95c2086950f39880ead5e45b356c94388e5cb606f5a5c2b697"
+url = "https://github.com/openbao/openbao/releases/download/v2.5.5/bao_2.5.5_Linux_x86_64.tar.gz"
+url_api = "https://api.github.com/repos/openbao/openbao/releases/assets/450180803"
+
+[tools.openbao."platforms.macos-arm64"]
+checksum = "sha256:944c8f18068305944edaa7d4a8b1d2895d2f2e7b0b09a2635210b0e5b4de84c9"
+url = "https://github.com/openbao/openbao/releases/download/v2.5.5/bao_2.5.5_Darwin_arm64.tar.gz"
+url_api = "https://api.github.com/repos/openbao/openbao/releases/assets/450161703"
+
+[tools.openbao."platforms.macos-x64"]
+checksum = "sha256:be712aafda1170a05dcc66af7066dc724b6b8a13c4976c74cc677233e4278329"
+url = "https://github.com/openbao/openbao/releases/download/v2.5.5/bao_2.5.5_Darwin_x86_64.tar.gz"
+url_api = "https://api.github.com/repos/openbao/openbao/releases/assets/450161702"
+
+[tools.openbao."platforms.windows-x64"]
+checksum = "sha256:ed412b3233cb5d870ed8bec4cb1bdd3cdfeefa193c6c21f7c7d2055481b140bc"
+url = "https://github.com/openbao/openbao/releases/download/v2.5.5/bao_2.5.5_Windows_x86_64.zip"
+url_api = "https://api.github.com/repos/openbao/openbao/releases/assets/450162763"
 
 [[tools.pipx]]
 version = "1.14.0"
