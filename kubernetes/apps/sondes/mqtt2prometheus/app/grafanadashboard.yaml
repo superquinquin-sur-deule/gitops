@@ -98,11 +98,11 @@ spec:
           "type": "timeseries",
           "title": "Température — congélateurs",
           "datasource": { "type": "prometheus", "uid": "$${DS_PROMETHEUS}" },
-          "gridPos": { "h": 8, "w": 8, "x": 0, "y": 8 },
+          "gridPos": { "h": 8, "w": 12, "x": 0, "y": 8 },
           "fieldConfig": {
             "defaults": {
               "unit": "celsius",
-              "custom": { "drawStyle": "line", "lineInterpolation": "smooth", "fillOpacity": 10, "showPoints": "auto", "spanNulls": true }
+              "custom": { "drawStyle": "line", "lineInterpolation": "stepAfter", "fillOpacity": 10, "showPoints": "auto", "spanNulls": true }
             },
             "overrides": []
           },
@@ -120,37 +120,11 @@ spec:
           ]
         },
         {
-          "id": 12,
-          "type": "timeseries",
-          "title": "Humidité — congélateurs",
-          "datasource": { "type": "prometheus", "uid": "$${DS_PROMETHEUS}" },
-          "gridPos": { "h": 8, "w": 8, "x": 8, "y": 8 },
-          "fieldConfig": {
-            "defaults": {
-              "unit": "humidity",
-              "custom": { "drawStyle": "line", "lineInterpolation": "smooth", "fillOpacity": 10, "showPoints": "auto", "spanNulls": true }
-            },
-            "overrides": []
-          },
-          "options": {
-            "legend": { "displayMode": "table", "placement": "bottom", "calcs": ["lastNotNull", "min", "max"] },
-            "tooltip": { "mode": "multi", "sort": "desc" }
-          },
-          "targets": [
-            {
-              "datasource": { "type": "prometheus", "uid": "$${DS_PROMETHEUS}" },
-              "expr": "humidity{sensor=~\"temp_congelateur.*\", sensor=~\"$$sensor\"}",
-              "legendFormat": "{{sensor}}",
-              "refId": "A"
-            }
-          ]
-        },
-        {
           "id": 13,
           "type": "timeseries",
           "title": "Batterie — congélateurs",
           "datasource": { "type": "prometheus", "uid": "$${DS_PROMETHEUS}" },
-          "gridPos": { "h": 8, "w": 8, "x": 16, "y": 8 },
+          "gridPos": { "h": 8, "w": 12, "x": 12, "y": 8 },
           "fieldConfig": {
             "defaults": {
               "unit": "percent",
@@ -193,11 +167,11 @@ spec:
           "type": "timeseries",
           "title": "Température — frigos",
           "datasource": { "type": "prometheus", "uid": "$${DS_PROMETHEUS}" },
-          "gridPos": { "h": 8, "w": 8, "x": 0, "y": 17 },
+          "gridPos": { "h": 8, "w": 12, "x": 0, "y": 17 },
           "fieldConfig": {
             "defaults": {
               "unit": "celsius",
-              "custom": { "drawStyle": "line", "lineInterpolation": "smooth", "fillOpacity": 10, "showPoints": "auto", "spanNulls": true }
+              "custom": { "drawStyle": "line", "lineInterpolation": "stepAfter", "fillOpacity": 10, "showPoints": "auto", "spanNulls": true }
             },
             "overrides": []
           },
@@ -215,37 +189,11 @@ spec:
           ]
         },
         {
-          "id": 22,
-          "type": "timeseries",
-          "title": "Humidité — frigos",
-          "datasource": { "type": "prometheus", "uid": "$${DS_PROMETHEUS}" },
-          "gridPos": { "h": 8, "w": 8, "x": 8, "y": 17 },
-          "fieldConfig": {
-            "defaults": {
-              "unit": "humidity",
-              "custom": { "drawStyle": "line", "lineInterpolation": "smooth", "fillOpacity": 10, "showPoints": "auto", "spanNulls": true }
-            },
-            "overrides": []
-          },
-          "options": {
-            "legend": { "displayMode": "table", "placement": "bottom", "calcs": ["lastNotNull", "min", "max"] },
-            "tooltip": { "mode": "multi", "sort": "desc" }
-          },
-          "targets": [
-            {
-              "datasource": { "type": "prometheus", "uid": "$${DS_PROMETHEUS}" },
-              "expr": "humidity{sensor=~\"temp_frigo.*\", sensor=~\"$$sensor\"}",
-              "legendFormat": "{{sensor}}",
-              "refId": "A"
-            }
-          ]
-        },
-        {
           "id": 23,
           "type": "timeseries",
           "title": "Batterie — frigos",
           "datasource": { "type": "prometheus", "uid": "$${DS_PROMETHEUS}" },
-          "gridPos": { "h": 8, "w": 8, "x": 16, "y": 17 },
+          "gridPos": { "h": 8, "w": 12, "x": 12, "y": 17 },
           "fieldConfig": {
             "defaults": {
               "unit": "percent",

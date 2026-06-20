@@ -75,7 +75,11 @@ spec:
               device_id_regex: "zigbee2mqtt/(?P<deviceid>.+)"
               qos: 0
             cache:
-              timeout: 24h
+              # Les sondes ne publient qu'au changement : on conserve (et ré-expose
+              # à chaque scrape) la dernière valeur longtemps pour éviter les trous
+              # quand une sonde reste stable. Doit dépasser le plus long silence
+              # possible d'une sonde vivante.
+              timeout: 168h
             json_parsing:
               separator: .
             metrics:
