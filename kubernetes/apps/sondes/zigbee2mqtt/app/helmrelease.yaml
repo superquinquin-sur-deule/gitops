@@ -23,6 +23,8 @@ spec:
               tag: 2.9.2
             env:
               TZ: Europe/Paris
+              # Démarrage headless : pas de page d'onboarding, on utilise la config ci-dessous
+              Z2M_ONBOARD_NO_SERVER: "1"
               ZIGBEE2MQTT_CONFIG_MQTT_SERVER: mqtt://mosquitto:1883
               ZIGBEE2MQTT_CONFIG_SERIAL_PORT: tcp://192.168.7.127:6638
               ZIGBEE2MQTT_CONFIG_SERIAL_ADAPTER: ember
