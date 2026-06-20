@@ -1,0 +1,107 @@
+---
+# yaml-language-server: $schema=https://raw.githubusercontent.com/bjw-s-labs/helm-charts/main/charts/other/app-template/schemas/helmrelease-helm-v2.schema.json
+apiVersion: helm.toolkit.fluxcd.io/v2
+kind: HelmRelease
+metadata:
+  name: &app mqtt2prometheus
+spec:
+  interval: 1h
+  chartRef:
+    kind: OCIRepository
+    name: *app
+  values:
+    controllers:
+      mqtt2prometheus:
+        strategy: RollingUpdate
+        annotations:
+          reloader.stakater.com/auto: "true"
+        containers:
+          app:
+            image:
+              repository: ghcr.io/hikhvar/mqtt2prometheus
+              tag: v0.1.6
+            args:
+              - -config
+              - /config.yaml
+            envFrom:
+              - secretRef:
+                  name: mqtt2prometheus-secret
+            probes:
+              liveness: &probe
+                enabled: true
+                custom: true
+                spec:
+                  httpGet:
+                    path: /metrics
+                    port: &port 9641
+                  initialDelaySeconds: 10
+                  periodSeconds: 30
+                  failureThreshold: 3
+              readiness: *probe
+            securityContext:
+              allowPrivilegeEscalation: false
+              readOnlyRootFilesystem: true
+              capabilities: {drop: ["ALL"]}
+            resources:
+              requests:
+                cpu: 10m
+                memory: 32Mi
+              limits:
+                memory: 128Mi
+    defaultPodOptions:
+      securityContext:
+        runAsNonRoot: true
+        runAsUser: 65534
+        runAsGroup: 65534
+    service:
+      app:
+        controller: mqtt2prometheus
+        ports:
+          metrics:
+            port: *port
+    serviceMonitor:
+      app:
+        endpoints:
+          - port: metrics
+    configMaps:
+      config:
+        data:
+          config.yaml: |
+            mqtt:
+              server: tcp://mosquitto:1883
+              topic_path: zigbee2mqtt/+
+              device_id_regex: "zigbee2mqtt/(?P<deviceid>.+)"
+              qos: 0
+            cache:
+              timeout: 24h
+            json_parsing:
+              separator: .
+            metrics:
+              - prom_name: temperature
+                mqtt_name: temperature
+                type: gauge
+                help: Température mesurée par la sonde (°C)
+              - prom_name: humidity
+                mqtt_name: humidity
+                type: gauge
+                help: Humidité relative (%)
+              - prom_name: battery
+                mqtt_name: battery
+                type: gauge
+                help: Niveau de batterie (%)
+              - prom_name: voltage
+                mqtt_name: voltage
+                type: gauge
+                help: Tension de la pile (mV)
+              - prom_name: linkquality
+                mqtt_name: linkquality
+                type: gauge
+                help: Qualité du lien Zigbee (LQI)
+    persistence:
+      config:
+        type: configMap
+        identifier: config
+        globalMounts:
+          - path: /config.yaml
+            subPath: config.yaml
+            readOnly: true

@@ -1,0 +1,98 @@
+---
+# yaml-language-server: $schema=https://raw.githubusercontent.com/bjw-s-labs/helm-charts/main/charts/other/app-template/schemas/helmrelease-helm-v2.schema.json
+apiVersion: helm.toolkit.fluxcd.io/v2
+kind: HelmRelease
+metadata:
+  name: &app mosquitto
+spec:
+  interval: 1h
+  chartRef:
+    kind: OCIRepository
+    name: *app
+  values:
+    controllers:
+      mosquitto:
+        strategy: Recreate
+        annotations:
+          reloader.stakater.com/auto: "true"
+        initContainers:
+          init-passwd:
+            image:
+              repository: docker.io/library/eclipse-mosquitto
+              tag: 2.0.22
+            command:
+              - /bin/sh
+              - -c
+              - mosquitto_passwd -b -c /mosquitto/pwd/passwords "$${MQTT_USERNAME}" "$${MQTT_PASSWORD}"
+            envFrom:
+              - secretRef:
+                  name: mosquitto-secret
+        containers:
+          app:
+            image:
+              repository: docker.io/library/eclipse-mosquitto
+              tag: 2.0.22
+            probes:
+              liveness: &probe
+                enabled: true
+                custom: true
+                spec:
+                  tcpSocket:
+                    port: &port 1883
+                  initialDelaySeconds: 10
+                  periodSeconds: 15
+                  failureThreshold: 3
+              readiness: *probe
+            securityContext:
+              allowPrivilegeEscalation: false
+              capabilities: {drop: ["ALL"]}
+            resources:
+              requests:
+                cpu: 10m
+                memory: 16Mi
+              limits:
+                memory: 64Mi
+    defaultPodOptions:
+      securityContext:
+        runAsNonRoot: true
+        runAsUser: 1883
+        runAsGroup: 1883
+        fsGroup: 1883
+        fsGroupChangePolicy: OnRootMismatch
+    service:
+      app:
+        controller: mosquitto
+        ports:
+          mqtt:
+            port: *port
+    configMaps:
+      config:
+        data:
+          mosquitto.conf: |
+            listener 1883
+            persistence true
+            persistence_location /mosquitto/data/
+            allow_anonymous false
+            password_file /mosquitto/pwd/passwords
+            log_dest stdout
+    persistence:
+      data:
+        type: persistentVolumeClaim
+        accessMode: ReadWriteOnce
+        size: 1Gi
+        storageClass: ceph-block
+        advancedMounts:
+          mosquitto:
+            app:
+              - path: /mosquitto/data
+      config:
+        type: configMap
+        identifier: config
+        globalMounts:
+          - path: /mosquitto/config/mosquitto.conf
+            subPath: mosquitto.conf
+            readOnly: true
+      pwd:
+        type: emptyDir
+        globalMounts:
+          - path: /mosquitto/pwd
