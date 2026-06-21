@@ -6,3 +6,4 @@ resources:
   - ./nfs-backup-pv.yaml
   - ./postgrescluster.yaml
   - ./externalsecret-rbac.yaml
+  - ./metabase-grants.yaml

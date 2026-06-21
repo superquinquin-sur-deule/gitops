@@ -1,0 +1,67 @@
+---
+# Grants the read-only `metabase` role SELECT access on the `dlc` database.
+# Idempotent: safe to re-run. ALTER DEFAULT PRIVILEGES covers tables created
+# later by the `dlc` role (the owner of dlc's tables).
+#
+# Re-running after a change: a Job's spec is immutable, so delete it first
+#   kubectl -n database delete job metabase-grants
+# then `flux reconcile kustomization pg-main` recreates it.
+#
+# Retries (backoffLimit) absorb the race where this runs before Crunchy has
+# finished creating the `metabase` role.
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: metabase-grants
+spec:
+  backoffLimit: 20
+  ttlSecondsAfterFinished: 86400
+  template:
+    spec:
+      restartPolicy: OnFailure
+      securityContext:
+        runAsNonRoot: true
+        runAsUser: 26 # postgres
+      containers:
+        - name: psql
+          image: registry.developers.crunchydata.com/crunchydata/crunchy-postgres:ubi9-16.13-2610
+          env:
+            - name: PGHOST
+              valueFrom:
+                secretKeyRef:
+                  name: pg-main-pguser-postgres
+                  key: host
+            - name: PGPORT
+              valueFrom:
+                secretKeyRef:
+                  name: pg-main-pguser-postgres
+                  key: port
+            - name: PGUSER
+              valueFrom:
+                secretKeyRef:
+                  name: pg-main-pguser-postgres
+                  key: user
+            - name: PGPASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: pg-main-pguser-postgres
+                  key: password
+          command:
+            - /bin/sh
+            - -c
+            - |
+              set -e
+              export PATH="/usr/pgsql-16/bin:$PATH"
+              psql -v ON_ERROR_STOP=1 -d dlc <<'SQL'
+              GRANT CONNECT ON DATABASE dlc TO metabase;
+              GRANT USAGE ON SCHEMA public TO metabase;
+              GRANT SELECT ON ALL TABLES IN SCHEMA public TO metabase;
+              ALTER DEFAULT PRIVILEGES FOR ROLE dlc IN SCHEMA public
+                GRANT SELECT ON TABLES TO metabase;
+              SQL
+          resources:
+            requests:
+              cpu: 10m
+              memory: 32Mi
+            limits:
+              memory: 128Mi

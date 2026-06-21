@@ -1,0 +1,88 @@
+---
+apiVersion: helm.toolkit.fluxcd.io/v2
+kind: HelmRelease
+metadata:
+  name: ssh-bastion
+spec:
+  chartRef:
+    kind: OCIRepository
+    name: ssh-bastion
+  interval: 1h
+  values:
+    controllers:
+      ssh-bastion:
+        annotations:
+          reloader.stakater.com/auto: "true"
+        containers:
+          app:
+            image:
+              repository: lscr.io/linuxserver/openssh-server
+              tag: latest
+            env:
+              PUID: "1000"
+              PGID: "1000"
+              TZ: Europe/Paris
+              PASSWORD_ACCESS: "false"
+              SUDO_ACCESS: "false"
+              USER_NAME: metatunnel
+              PUBLIC_KEY_FILE: /keys/authorized_keys
+            resources:
+              requests:
+                cpu: 10m
+                memory: 32Mi
+              limits:
+                memory: 128Mi
+    service:
+      app:
+        controller: ssh-bastion
+        type: LoadBalancer
+        annotations:
+          lbipam.cilium.io/ips: "192.168.7.49"
+        ports:
+          ssh:
+            port: 22
+            targetPort: 2222
+    configMaps:
+      # The forward-only key. `restrict` strips everything (pty/agent/x11/forwarding),
+      # then we re-enable port-forwarding limited to pg-main only via permitopen.
+      authorized-keys:
+        data:
+          authorized_keys: |
+            restrict,port-forwarding,permitopen="pg-main-primary.database.svc.cluster.local:5432" ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIBnpWO2bzvUOSp32pc0D63BJTNA1WgZ3J8HrUGYwCfkG metabase
+      init:
+        data:
+          50-harden-sshd.sh: |
+            #!/bin/sh
+            CONF=/etc/ssh/sshd_config
+            sed -i -E '/^[#[:space:]]*(AllowTcpForwarding|AllowAgentForwarding|X11Forwarding|PermitTunnel|GatewayPorts|PermitTTY)\b/d' "$CONF"
+            cat >> "$CONF" <<'EOF'
+            AllowTcpForwarding yes
+            AllowAgentForwarding no
+            X11Forwarding no
+            PermitTunnel no
+            GatewayPorts no
+            PermitTTY no
+            EOF
+    persistence:
+      # Persist host keys across restarts so Metabase's stored fingerprint stays valid.
+      config:
+        type: persistentVolumeClaim
+        accessMode: ReadWriteOnce
+        size: 256Mi
+        storageClass: openebs-hostpath
+        globalMounts:
+          - path: /config
+      authorized-keys:
+        type: configMap
+        identifier: authorized-keys
+        globalMounts:
+          - path: /keys/authorized_keys
+            subPath: authorized_keys
+            readOnly: true
+      init:
+        type: configMap
+        identifier: init
+        defaultMode: 0755
+        globalMounts:
+          - path: /custom-cont-init.d
+            readOnly: true
