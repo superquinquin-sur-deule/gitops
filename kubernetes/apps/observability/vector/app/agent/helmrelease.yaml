@@ -33,7 +33,7 @@ spec:
           app:
             image:
               repository: mirror.gcr.io/timberio/vector
-              tag: 0.55.0-alpine
+              tag: 0.56.0-alpine
             env:
               VECTOR_SELF_NODE_NAME:
                 valueFrom:
