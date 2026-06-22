@@ -53,9 +53,10 @@ spec:
         data:
           50-harden-sshd.sh: |
             #!/bin/sh
-            CONF=/etc/ssh/sshd_config
-            sed -i -E '/^[#[:space:]]*(AllowTcpForwarding|AllowAgentForwarding|X11Forwarding|PermitTunnel|GatewayPorts|PermitTTY)\b/d' "$CONF"
-            cat >> "$CONF" <<'EOF'
+            for CONF in /etc/ssh/sshd_config /config/sshd/sshd_config; do
+              [ -f "$CONF" ] || continue
+              sed -i -E '/^[#[:space:]]*(AllowTcpForwarding|AllowAgentForwarding|X11Forwarding|PermitTunnel|GatewayPorts|PermitTTY)\b/d' "$CONF"
+              cat >> "$CONF" <<'EOF'
             AllowTcpForwarding yes
             AllowAgentForwarding no
             X11Forwarding no
@@ -63,6 +64,7 @@ spec:
             GatewayPorts no
             PermitTTY no
             EOF
+            done
     persistence:
       # Persist host keys across restarts so Metabase's stored fingerprint stays valid.
       config:
