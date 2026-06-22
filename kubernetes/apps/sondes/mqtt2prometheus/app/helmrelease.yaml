@@ -12,7 +12,10 @@ spec:
   values:
     controllers:
       mqtt2prometheus:
-        strategy: RollingUpdate
+        # Recreate (et pas RollingUpdate) : avec les labels pod/instance droppés
+        # ci-dessous, deux pods qui se chevauchent exposeraient des séries
+        # identiques -> "duplicate sample for timestamp" côté Prometheus.
+        strategy: Recreate
         annotations:
           reloader.stakater.com/auto: "true"
         containers:
@@ -65,6 +68,12 @@ spec:
       app:
         endpoints:
           - port: metrics
+            # Les métriques décrivent des sondes externes, pas le pod exporter.
+            # On drop pod/instance pour que les séries restent stables au
+            # redémarrage du pod (sinon doublement des séries).
+            metricRelabelings:
+              - action: labeldrop
+                regex: (pod|instance)
     configMaps:
       config:
         data:
