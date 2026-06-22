@@ -59,7 +59,7 @@ spec:
         - apiURL:
             name: alertmanager-rocketchat
             key: webhook-url
-          channel: "#hygiène-et-sécurité-alertes"
+          channel: "#hygiene-alertes"
           sendResolved: true
           title: >-
             [{{ .Status | toUpper }}{{ if eq .Status "firing" }} {{ .Alerts.Firing | len }}{{ end }}]
