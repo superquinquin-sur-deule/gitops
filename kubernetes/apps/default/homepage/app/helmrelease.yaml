@@ -49,6 +49,10 @@ spec:
       bookmarks: []
 
       services:
+        - Magasin:
+            - Sondes:
+                href: https://grafana.${SECRET_DOMAIN}/goto/efpwy89obsnb4c?orgId=1
+                description: Mesures de température des Congélateurs/Frigos
         - Salariées:
             - Odoo:
                 href: https://gestion-sdl.${SQQ_DOMAIN}

@@ -83,7 +83,7 @@ spec:
         annotations:
           gethomepage.dev/enabled: "true"
           gethomepage.dev/name: Zigbee2MQTT
-          gethomepage.dev/group: Sondes
+          gethomepage.dev/group: Informatique
           gethomepage.dev/icon: zigbee2mqtt.png
           gethomepage.dev/description: Sondes température Zigbee
         hostnames:
