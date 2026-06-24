@@ -12,8 +12,8 @@ spec:
           annotations:
             summary: >-
               La sonde {{ $labels.sensor }} mesure {{ $value | printf "%.1f" }}°C
-              (seuil -15°C) depuis plus de 30 minutes.
-          expr: min_over_time(temperature{sensor=~"temp_congelateur_.*"}[30m]) > -15
+              (seuil -14°C) depuis plus de 30 minutes.
+          expr: min_over_time(temperature{sensor=~"temp_congelateur_.*"}[30m]) > -14
           for: 0m
           labels:
             severity: critical
