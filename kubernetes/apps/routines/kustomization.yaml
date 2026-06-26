@@ -11,3 +11,4 @@ resources:
   - ./adjust-ftop-seats/ks.yaml
   - ./reset-ftop-counter/ks.yaml
   - ./sync-odoo-brevo/ks.yaml
+  - ./monthly-product-report/ks.yaml

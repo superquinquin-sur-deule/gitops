@@ -1,0 +1,53 @@
+---
+apiVersion: batch/v1
+kind: CronJob
+metadata:
+  name: monthly-product-report
+spec:
+  schedule: "00 08 1 * *"
+  timeZone: Europe/Paris
+  concurrencyPolicy: Forbid
+  successfulJobsHistoryLimit: 3
+  failedJobsHistoryLimit: 3
+  jobTemplate:
+    spec:
+      backoffLimit: 1
+      template:
+        metadata:
+          labels:
+            app.kubernetes.io/name: monthly-product-report
+        spec:
+          restartPolicy: OnFailure
+          containers:
+            - name: odoo-cli
+              image: docker.io/library/debian:bookworm-slim
+              imagePullPolicy: IfNotPresent
+              envFrom:
+                - secretRef:
+                    name: monthly-product-report-secret
+              command:
+                - /bin/bash
+                - -euo
+                - pipefail
+                - -c
+                - |
+                  apt-get update -qq
+                  apt-get install -y -qq --no-install-recommends curl ca-certificates tzdata >/dev/null
+                  export TZ=Europe/Paris
+                  # renovate: datasource=github-releases depName=superquinquin-sur-deule/odoo-cli
+                  version="0.17.0"
+                  url="https://github.com/superquinquin-sur-deule/odoo-cli/releases/download/v$${version}/odoo-cli-$${version}-linux-x86_64"
+                  curl -fsSL -o /usr/local/bin/odoo-cli "$url"
+                  chmod +x /usr/local/bin/odoo-cli
+                  LAST_MONTH="$(date -d "$(date +%Y-%m-01) -1 month" +%Y-%m)"
+                  exec odoo-cli articles monthly-report \
+                    --month "$$LAST_MONTH" \
+                    --sender $$SENDER_EMAIL \
+                    --sender-name "Rapport produits" \
+                    --recipients $$RECIPIENTS_EMAILS
+              resources:
+                requests:
+                  cpu: 50m
+                  memory: 128Mi
+                limits:
+                  memory: 512Mi
