@@ -1,0 +1,22 @@
+---
+apiVersion: gateway.networking.k8s.io/v1
+kind: HTTPRoute
+metadata:
+  name: semaphore
+  annotations:
+    gethomepage.dev/enabled: "true"
+    gethomepage.dev/name: Semaphore UI
+    gethomepage.dev/group: Superquinquin
+    gethomepage.dev/icon: semaphore.png
+    gethomepage.dev/description: Ansible playbooks runner
+spec:
+  hostnames:
+    - "semaphore.${SECRET_DOMAIN}"
+  parentRefs:
+    - name: envoy-internal
+      namespace: network
+      sectionName: https
+  rules:
+    - backendRefs:
+        - name: semaphore
+          port: 3000
