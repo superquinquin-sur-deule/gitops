@@ -40,6 +40,9 @@ spec:
     - name: metabase
       password:
         type: AlphaNumeric
+    - name: semaphore
+      databases:
+        - semaphore
 
   service:
     type: LoadBalancer
