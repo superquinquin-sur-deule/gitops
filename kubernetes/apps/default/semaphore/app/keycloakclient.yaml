@@ -1,0 +1,18 @@
+---
+apiVersion: v1.edp.epam.com/v1
+kind: KeycloakClient
+metadata:
+  name: semaphore
+spec:
+  realmRef:
+    name: surdeule
+    kind: ClusterKeycloakRealm
+  clientId: semaphore
+  public: false
+  directAccess: false
+  secret: $$semaphore-oidc:OIDC_CLIENT_SECRET
+  webUrl: "https://semaphore.${SECRET_DOMAIN}"
+  redirectUris:
+    - "https://semaphore.${SECRET_DOMAIN}/api/auth/oidc/keycloak/redirect"
+  webOrigins:
+    - "https://semaphore.${SECRET_DOMAIN}"
