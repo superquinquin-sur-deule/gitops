@@ -16,6 +16,7 @@ spec:
     groupWait: 1m
     routes:
       - receiver: rocketchat-hygiene
+        repeatInterval: 30m
         matchers:
           - name: team
             value: hygiene-securite
