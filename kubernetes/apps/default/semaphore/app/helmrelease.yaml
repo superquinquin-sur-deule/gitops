@@ -24,18 +24,6 @@ spec:
     podAnnotations:
       reloader.stakater.com/auto: "true"
 
-    # Database configuration - PostgreSQL via Crunchy
-    database:
-      type: postgres
-      usernameFromSecret: true
-      passwordFromSecret: true
-      existingSecret: semaphore-db
-      usernameKey: db_user
-      passwordKey: db_password
-      host: pg-main-rw.database.svc.cluster.local
-      port: 5432
-      name: semaphore
-
     # Service
     service:
       type: ClusterIP
