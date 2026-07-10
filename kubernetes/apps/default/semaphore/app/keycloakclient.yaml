@@ -10,7 +10,7 @@ spec:
   clientId: semaphore
   public: false
   directAccess: false
-  secret: $$semaphore-oidc:OIDC_CLIENT_SECRET
+  secret: $$semaphore-db:OIDC_CLIENT_SECRET
   webUrl: "https://semaphore.${SECRET_DOMAIN}"
   redirectUris:
     - "https://semaphore.${SECRET_DOMAIN}/api/auth/oidc/keycloak/redirect"
