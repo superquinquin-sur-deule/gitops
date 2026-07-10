@@ -17,7 +17,7 @@ spec:
 
     image:
       repository: semaphoreui/semaphore
-      tag: "2.18.3"
+      tag: "latest"
       pullPolicy: IfNotPresent
 
     # Pod annotations for auto-reload on secret changes (via Reloader)
