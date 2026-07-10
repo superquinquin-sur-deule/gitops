@@ -24,6 +24,19 @@ spec:
     podAnnotations:
       reloader.stakater.com/auto: "true"
 
+    # Database configuration - PostgreSQL via Crunchy pg-main
+    # Values sourced from ExternalSecret which fuses Crunchy credentials with app secrets
+    database:
+      type: postgres
+      host: pg-main-primary.database.svc
+      port: 5432
+      name: semaphore
+      usernameFromSecret: true
+      existingSecret: semaphore-db
+      usernameKey: db_user
+      passwordFromSecret: true
+      passwordKey: db_password
+
     # Service
     service:
       type: ClusterIP
