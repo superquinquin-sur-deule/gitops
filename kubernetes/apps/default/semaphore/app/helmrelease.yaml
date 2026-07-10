@@ -34,18 +34,24 @@ spec:
     ingress:
       enabled: false
 
-    # Environment variables
+    # Secrets injection: Load all keys from semaphore-db secret as env vars
+    # This includes: db_host, db_port, db_name, db_user, db_password,
+    # OIDC_CLIENT_SECRET, VAULT_TOKEN
+    envFrom:
+      - secretRef:
+          name: semaphore-db
+
+    # Environment variables (static URLs, config)
     env:
+      # Database dialect (Semaphore will read host/port/user/pass/db from env vars)
+      - name: SEMAPHORE_DB_DIALECT
+        value: postgres
+
       # OIDC Configuration (Keycloak)
       - name: SEMAPHORE_OIDC_PROVIDER_URL
         value: "https://auth.${SECRET_DOMAIN}/realms/surdeule"
       - name: SEMAPHORE_OIDC_CLIENT_ID
         value: semaphore
-      - name: SEMAPHORE_OIDC_CLIENT_SECRET
-        valueFrom:
-          secretKeyRef:
-            name: semaphore-db
-            key: OIDC_CLIENT_SECRET
       - name: SEMAPHORE_OIDC_REDIRECT_URL
         value: "https://semaphore.${SECRET_DOMAIN}/api/auth/oidc/keycloak/redirect"
       - name: SEMAPHORE_OIDC_TOKEN_URL
@@ -58,11 +64,8 @@ spec:
       # Vault/OpenBao integration for playbooks
       - name: SEMAPHORE_VAULT_ADDR
         value: "https://bao.${SECRET_DOMAIN}"
-      - name: SEMAPHORE_VAULT_TOKEN
-        valueFrom:
-          secretKeyRef:
-            name: semaphore-db
-            key: VAULT_TOKEN
+        # NOTE: SEMAPHORE_VAULT_TOKEN and SEMAPHORE_OIDC_CLIENT_SECRET are loaded
+        # from the secret via envFrom: secretRef (no duplication needed)
 
     # Health probes (endpoint: /api/ping)
     livenessProbe:
