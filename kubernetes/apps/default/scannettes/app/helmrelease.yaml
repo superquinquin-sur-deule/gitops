@@ -25,7 +25,7 @@ spec:
           main:
             image:
               repository: ghcr.io/superquinquin-sur-deule/scannettes
-              tag: latest
+              tag: latest@sha256:e7b9e1feb7662aa773edfb98888ec890aa91251614fa5717258b0197e1da4cae
 
             env:
               ENV: production
