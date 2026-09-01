@@ -40,6 +40,8 @@ spec:
             parameters: "@kubernetes"
           - name: forward
             parameters: . /etc/resolv.conf
+            configBlock: |-
+              prefer_udp
           - name: cache
             configBlock: |-
               prefetch 20
