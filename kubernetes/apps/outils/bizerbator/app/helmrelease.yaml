@@ -26,6 +26,53 @@ spec:
       jdbcUrl: "jdbc:postgresql://pg-main-primary.database.svc:5432/bizerbator"
       username: bizerbator
 
+    # Helm remplace les listes au lieu de les fusionner : activer une balance
+    # impose donc de redeclarer config.app.scales en entier, valeurs du chart
+    # 1.0.0 comprises.
+    config:
+      app:
+        scales:
+          - name: MAG_0000-BIZ_01
+            label: Balance FLEG 001
+            magasin: MAG_0000
+            guid: 0d3ec027-f5c0-4fa0-8e3f-bb28a018aef8
+            host: 192.168.6.16
+            data-port: 1025
+            departments:
+              - 240
+            photos: true
+            active: true
+          - name: MAG_0000-BIZ_02
+            label: Balance FLEG 002
+            magasin: MAG_0000
+            guid: b1b19edd-6214-4006-aa5a-9ef215260348
+            host: 192.168.6.17
+            data-port: 1025
+            departments:
+              - 240
+            photos: true
+            active: true
+          - name: MAG_0000-BIZ_03
+            label: Balance COND 001
+            magasin: MAG_0000
+            guid: b7259904-36ef-4ab8-9536-d44bef18d2f2
+            host: 192.168.6.21
+            data-port: 1025
+            departments:
+              - 242
+            photos: false
+            active: true
+          - name: MAG_0000-BIZ_04
+            label: Balance COND 002
+            magasin: MAG_0000
+            guid: e9dcccdb-fd5f-4fe8-9e92-617a3af41a90
+            host: 192.168.6.22
+            data-port: 1025
+            departments:
+              - 242
+            photos: false
+            active: true
+
     ftp:
       enabled: true
       user: bizerba
