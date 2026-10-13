@@ -1,0 +1,45 @@
+---
+# yaml-language-server: $schema=https://kubernetes-schemas.pages.dev/helm.toolkit.fluxcd.io/helmrelease_v2.json
+apiVersion: helm.toolkit.fluxcd.io/v2
+kind: HelmRelease
+metadata:
+  name: &app bizerbator
+spec:
+  interval: 1h
+  chartRef:
+    kind: OCIRepository
+    name: *app
+  values:
+    image:
+      repository: docker.hoohoot.org/bizerbator/bizerbator
+      tag: "1.0.0"
+      pullPolicy: IfNotPresent
+    imagePullSecrets:
+      - name: harbor-creds
+
+    podAnnotations:
+      reloader.stakater.com/auto: "true"
+
+    existingSecret: bizerbator-secret
+
+    database:
+      jdbcUrl: "jdbc:postgresql://pg-main-primary.database.svc:5432/bizerbator"
+      username: bizerbator
+
+    ftp:
+      enabled: true
+      user: odoo
+      passiveAddress: "192.168.7.45"
+      service:
+        type: LoadBalancer
+        annotations:
+          lbipam.cilium.io/ips: "192.168.7.45"
+        externalTrafficPolicy: Local
+
+    persistence:
+      enabled: true
+      storageClass: ceph-block
+      size: 20Gi
+
+    ingress:
+      enabled: false

@@ -43,6 +43,9 @@ spec:
     - name: semaphore
       databases:
         - semaphore
+    - name: bizerbator
+      databases:
+        - bizerbator
 
   service:
     type: LoadBalancer

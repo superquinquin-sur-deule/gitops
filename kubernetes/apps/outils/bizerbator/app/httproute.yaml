@@ -1,0 +1,22 @@
+---
+apiVersion: gateway.networking.k8s.io/v1
+kind: HTTPRoute
+metadata:
+  name: bizerbator
+  annotations:
+    gethomepage.dev/enabled: "true"
+    gethomepage.dev/name: Bizerbator
+    gethomepage.dev/group: Magasin
+    gethomepage.dev/icon: mdi-scale
+    gethomepage.dev/description: Passerelle balances Bizerba
+spec:
+  hostnames:
+    - "bizerbator.${SECRET_DOMAIN}"
+  parentRefs:
+    - name: envoy-internal
+      namespace: network
+      sectionName: https
+  rules:
+    - backendRefs:
+        - name: bizerbator
+          port: 8080

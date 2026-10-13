@@ -9,3 +9,4 @@ components:
 resources:
   - ./namespace.yaml
   - ./sqq-dlc/ks.yaml
+  - ./bizerbator/ks.yaml
