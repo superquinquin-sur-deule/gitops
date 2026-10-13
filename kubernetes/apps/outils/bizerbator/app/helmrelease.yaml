@@ -28,7 +28,7 @@ spec:
 
     ftp:
       enabled: true
-      user: odoo
+      user: bizerba
       passiveAddress: "192.168.7.45"
       service:
         type: LoadBalancer
