@@ -22,6 +22,11 @@ spec:
               repository: ghcr.io/superquinquin-sur-deule/sqq-achat-groupe
               tag: 2.0.0
 
+            env:
+              # Derrière Envoy Gateway : sans ça Quarkus construit le
+              # redirect_uri OIDC en http:// et Keycloak le rejette.
+              QUARKUS_HTTP_PROXY_PROXY_ADDRESS_FORWARDING: "true"
+
             envFrom:
               - secretRef:
                   name: sqq-achat-groupe-secret
