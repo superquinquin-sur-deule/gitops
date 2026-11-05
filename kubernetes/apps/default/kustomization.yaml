@@ -19,3 +19,4 @@ resources:
   - ./immich/ks.yaml
   - ./immich-drop/ks.yaml
   - ./sqq-sondages/ks.yaml
+  - ./sqq-achat-groupe/ks.yaml

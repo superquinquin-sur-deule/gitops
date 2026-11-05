@@ -46,6 +46,9 @@ spec:
     - name: bizerbator
       databases:
         - bizerbator
+    - name: achatgroupe
+      databases:
+        - achatgroupe
 
   service:
     type: LoadBalancer
