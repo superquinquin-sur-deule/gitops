@@ -20,7 +20,7 @@ spec:
           main:
             image:
               repository: ghcr.io/superquinquin-sur-deule/sqq-achat-groupe
-              tag: 2.0.0
+              tag: 2.1.0
 
             env:
               # Derrière Envoy Gateway : sans ça Quarkus construit le
