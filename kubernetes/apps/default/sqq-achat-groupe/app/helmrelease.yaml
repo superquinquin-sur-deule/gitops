@@ -19,13 +19,16 @@ spec:
         containers:
           main:
             image:
-              repository: ghcr.io/superquinquin-sur-deule/sqq-achat-groupe
-              tag: 2.1.0
+              repository: ghcr.io/superquinquin-sur-deule/precommandes
+              tag: 2.2.0
 
             env:
               # Derrière Envoy Gateway : sans ça Quarkus construit le
               # redirect_uri OIDC en http:// et Keycloak le rejette.
               QUARKUS_HTTP_PROXY_PROXY_ADDRESS_FORWARDING: "true"
+              # Emails de confirmation de commande via Brevo
+              APP_EMAIL_ENABLED: "true"
+              APP_EMAIL_SENDER_NAME: Superquinquin
 
             envFrom:
               - secretRef:
