@@ -17,7 +17,7 @@ spec:
       restartPolicy: Always
       containers:
         - name: unseal
-          image: quay.io/openbao/openbao:2.5.4
+          image: quay.io/openbao/openbao:2.6.1
           env:
             - name: VAULT_ADDR
               value: http://openbao.openbao.svc.cluster.local:8200
